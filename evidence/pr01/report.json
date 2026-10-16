@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "practice_id": "PR01",
+  "commit": "256210776a40b10de40fb5b29ca38b4fedc1e386",
+  "course_kit": {
+    "version": "v1-w06",
+    "archive_sha256": "6eda53e1c566f7f0a7e09d7afe1e5a6f3b98397175a7e57dede9a84c6d14d0fe"
+  },
+  "commands": [
+    "source /opt/ros/lyrical/setup.bash && export ROS_DOMAIN_ID=26",
+    "ros2 doctor --report > evidence/pr01/doctor.txt 2>&1",
+    "ros2 run turtlesim turtlesim_node",
+    "ros2 run turtlesim turtle_teleop_key",
+    "ros2 node list --no-daemon --spin-time 2",
+    "ros2 topic list -t",
+    "ros2 node info /turtlesim",
+    "ros2 topic type /turtle1/pose",
+    "POSE_TYPE=$(ros2 topic type /turtle1/pose)",
+    "ros2 topic echo /turtle1/pose --once",
+    "time ros2 topic hz /turtle1/pose",
+    "export ROS_DOMAIN_ID=27 && ros2 run turtlesim turtle_teleop_key",
+    "export ROS_DOMAIN_ID=27; ros2 node list --no-daemon --spin-time 2",
+    "timeout 5s ros2 topic echo /turtle1/pose \"$POSE_TYPE\" --once > evidence/pr01/pose-broken.txt 2>&1",
+    "export ROS_DOMAIN_ID=26 && ros2 run turtlesim turtle_teleop_key",
+    "export ROS_DOMAIN_ID=26; ros2 node list --no-daemon --spin-time 2",
+    "timeout 5s ros2 topic echo /turtle1/pose \"$POSE_TYPE\" --once > evidence/pr01/pose-fixed.txt 2>&1",
+    "python3 -m json.tool evidence/pr01/environment.json",
+    "python3 .course-kit/v1/tools/check_practice.py PR01 --submission ."
+  ],
+  "tests": [
+    {
+      "name": "graph: /turtlesim и /teleop_turtle обнаружены в домене 26",
+      "status": "passed"
+    },
+    {
+      "name": "graph: /turtle1/pose имеет тип turtlesim_msgs/msg/Pose, /turtle1/cmd_vel — geometry_msgs/msg/Twist",
+      "status": "passed"
+    },
+    {
+      "name": "rate: /turtle1/pose ≈ 62.5 Hz (ros2 topic hz, 438 сообщений)",
+      "status": "passed"
+    },
+    {
+      "name": "domain split: в домене 27 нет /turtlesim, поза не пришла за 5 с (exit=124)",
+      "status": "passed"
+    },
+    {
+      "name": "domain restore: в домене 26 обе ноды, поза получена (exit=0)",
+      "status": "passed"
+    },
+    {
+      "name": "environment.json проходит python3 -m json.tool",
+      "status": "passed"
+    }
+  ],
+  "defect": {
+    "reproducer": "turtlesim в ROS_DOMAIN_ID=26; teleop и CLI перезапущены в ROS_DOMAIN_ID=27. ros2 node list показывает только /teleop_turtle; timeout 5s ros2 topic echo /turtle1/pose \"$POSE_TYPE\" --once → exit=124, pose-broken.txt пуст; стрелки не двигают черепаху.",
+    "root_cause": "ROS_DOMAIN_ID задаёт DDS-домен discovery и читается при запуске ноды. Участники разных доменов не обнаруживают друг друга, поэтому cmd_vel и pose не доходят. export не меняет домен уже работающей ноды, поэтому teleop пришлось перезапускать; симулятор оставался в исходном домене и не требовал изменений.",
+    "proof_after": "teleop и CLI снова в ROS_DOMAIN_ID=26: node list показывает /teleop_turtle и /turtlesim; та же команда timeout 5s ros2 topic echo ... → exit=0, поза записана в pose-fixed.txt; стрелки снова управляют черепахой."
+  },
+  "claims": {
+    "public_tests_passed": true,
+    "defect_reproduced": true,
+    "defect_fixed": true
+  },
+  "time": {
+    "contact_academic_hours": 2,
+    "self_study_hours": 2
+  },
+  "ai_used": true
+}

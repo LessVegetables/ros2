@@ -82,3 +82,36 @@ printf 'exit=%s\n' "$?"   # ожидается exit=0
 python3 -m json.tool evidence/pr01/environment.json > /dev/null
 python3 .course-kit/v1/tools/check_practice.py PR01 --submission .
 ```
+
+## ПР02. Пакет turtle_bringup и launch
+
+Корень репозитория — корень colcon-workspace, пакет лежит в
+`src/turtle_bringup`. Сборка (в терминале, где подключена только базовая ROS):
+
+```bash
+source /opt/ros/lyrical/setup.bash
+colcon build --symlink-install --packages-select turtle_bringup
+```
+
+Запуск (в новом терминале, из корня репозитория):
+
+```bash
+source /opt/ros/lyrical/setup.bash
+source install/setup.bash
+export ROS_DOMAIN_ID=26
+ros2 launch turtle_bringup sim.launch.py
+```
+
+Команда движения (в другом терминале с той же средой):
+
+```bash
+ros2 topic pub --once /turtle1/cmd_vel geometry_msgs/msg/Twist \
+  '{linear: {x: 1.0}, angular: {z: 0.5}}'
+```
+
+Проверка сдачи:
+
+```bash
+python3 -m py_compile src/turtle_bringup/launch/sim.launch.py
+python3 .course-kit/v1/tools/check_practice.py PR02 --submission .
+```

@@ -1,0 +1,32 @@
+name: ROS checks
+
+on: [push, pull_request]
+
+env:
+  COURSE_KIT_URL: https://ros.lms.ci.nsu.ru/downloads/robotics-course-kit-v1-w06-6eda53e1c566.tar.gz
+  COURSE_KIT_SHA256: 6eda53e1c566f7f0a7e09d7afe1e5a6f3b98397175a7e57dede9a84c6d14d0fe
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate environment JSON
+        shell: bash
+        run: python3 -m json.tool evidence/pr01/environment.json > /dev/null
+
+      - name: Download course kit
+        shell: bash
+        run: |
+          curl -fsSLo course-kit.tar.gz "$COURSE_KIT_URL"
+          printf '%s  %s\n' "$COURSE_KIT_SHA256" course-kit.tar.gz | sha256sum -c -
+          mkdir -p .course-kit
+          tar -xzf course-kit.tar.gz -C .course-kit
+          rm course-kit.tar.gz
+
+      - name: Check PR evidence
+        shell: bash
+        run: python3 .course-kit/v1/tools/check_practice.py PR01 --submission .

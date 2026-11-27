@@ -182,3 +182,32 @@ ros2 action list -t
 colcon test --packages-select patrol && colcon test-result --verbose
 python3 .course-kit/v1/tools/check_practice.py PR04 --submission .
 ```
+
+## ПР05. Одна команда запуска, QoS и replay
+
+Пакет `src/course_bringup`, launch `patrol.launch.py`: глобальный turtlesim и
+в пространстве имён `patrol`, `pose_relay` (поза → `sensor_pose`, best_effort) и
+`pose_subscriber` (QoS из аргумента). Аргументы: `namespace`, `record`,
+`bag_dir`, `subscriber_reliability`.
+
+```bash
+colcon build --symlink-install && source install/setup.bash
+# сбой: reliable-подписчик против best_effort-издателя
+ros2 launch course_bringup patrol.launch.py namespace:=robot_a subscriber_reliability:=reliable record:=false
+ros2 topic info /robot_a/sensor_pose --verbose
+timeout --signal=INT 3s ros2 topic echo /robot_a/sensor_pose --qos-reliability reliable --once   # exit=124
+# исправление
+ros2 launch course_bringup patrol.launch.py namespace:=robot_a subscriber_reliability:=best_effort record:=false
+timeout --signal=INT 3s ros2 topic echo /robot_a/sensor_pose --qos-reliability best_effort --once
+ros2 bag record -s mcap -o evidence/pr05/bag --topics /robot_a/sensor_pose
+# повтор той же записи
+ros2 bag play evidence/pr05/bag --loop --qos-profile-overrides-path config/qos-overrides.yaml
+ros2 bag info evidence/pr05/bag
+```
+
+`timeout --signal=INT`: в Lyrical `ros2 topic echo` не завершается по SIGTERM.
+
+```bash
+colcon test --packages-select patrol course_bringup && colcon test-result --verbose
+python3 .course-kit/v1/tools/check_practice.py PR05 --submission .
+```

@@ -1,0 +1,5 @@
+# QoS издателя при ros2 bag play: тот же профиль, что у живого pose_relay.
+/robot_a/sensor_pose:
+  reliability: best_effort
+  history: keep_last
+  depth: 10

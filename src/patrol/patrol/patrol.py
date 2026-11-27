@@ -36,8 +36,10 @@ class Patrol(Node):
 
         self._last_pose: Optional[Pose] = None
         # Подписка хранится в поле: без ссылки объект удалил бы сборщик мусора.
+        # Относительное имя turtle1/pose: в корневом пространстве имён это /turtle1/pose,
+        # в /robot_a launch переназначает его на глобальный /turtle1/pose.
         self._pose_sub: Subscription = self.create_subscription(
-            Pose, '/turtle1/pose', self._on_pose, 10)
+            Pose, 'turtle1/pose', self._on_pose, 10)
         # Относительное имя: без remap это /cmd_vel, а не /turtle1/cmd_vel.
         self._cmd_pub: Publisher = self.create_publisher(Twist, 'cmd_vel', 10)
         self._timer: Timer = self.create_timer(period_for(self._publish_hz), self._on_timer)
@@ -46,7 +48,7 @@ class Patrol(Node):
         self.add_on_set_parameters_callback(self._on_set_parameters)
         self.add_post_set_parameters_callback(self._on_parameters_set)
         self.get_logger().info(
-            f'patrol: поза из /turtle1/pose, команда в {self._cmd_pub.topic_name}, '
+            f'patrol: поза из {self._pose_sub.topic_name}, команда в {self._cmd_pub.topic_name}, '
             f'linear_speed={self._linear_speed}, turn_rate={self._turn_rate}, '
             f'publish_hz={self._publish_hz}')
 

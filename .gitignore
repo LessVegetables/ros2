@@ -5,6 +5,7 @@ robotics-course-kit-*.sha256.txt
 build/
 install/
 log/
+bags/
 __pycache__/
 *.pyc
 *.egg-info/

@@ -1,0 +1,35 @@
+# ДЕФЕКТ: evidence/pr08/amcl-defect.yaml (base_frame_id: chassis), та же карта и запись
+
+$ sha256sum .course-kit/v1/fixtures/pr08/map.yaml .course-kit/v1/fixtures/pr08/map.pgm
+79d1003f551943d946a047295f100b1980c00415009b52e60cb9a9eaedf66cc0  .course-kit/v1/fixtures/pr08/map.yaml
+f190d3ecdbeebe8e9ac476d02dfcc47d51014638b38ba7a1d8a3c604039549de  .course-kit/v1/fixtures/pr08/map.pgm
+
+$ ros2 launch localization_case localization.launch.py params_file:=$PWD/evidence/pr08/amcl-defect.yaml map:=$PWD/.course-kit/v1/fixtures/pr08/map.yaml
+
+$ ros2 lifecycle get /amcl
+active [3]
+
+$ ros2 bag play /home/ubuntu/bags/pr07-sensors --topics /vehicle/scan /vehicle/odom /tf /tf_static /clock
+
+$ ros2 run tf2_ros tf2_echo map odom --ros-args -p use_sim_time:=true
+[INFO] [1795733277.944129419] [tf2_echo]: Waiting for transform map ->  odom: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[INFO] [1795733278.944169377] [tf2_echo]: Waiting for transform map ->  odom: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[INFO] [1795733279.944169170] [tf2_echo]: Waiting for transform map ->  odom: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[INFO] [1795733281.575481295] [rclcpp]: signal_handler(signum=2)
+
+$ timeout --signal=INT 4 ros2 topic echo /amcl_pose --once
+exit=137
+
+## лог AMCL (первые сообщения об ошибке)
+[amcl-2] [INFO] [1795733249.966089545] [amcl]: initTransforms
+[amcl-2] [ERROR] [1795733263.227023384] [amcl]: Couldn't transform from lidar_link to chassis, even though the message notifier is in use: ("chassis" passed to lookupTransform argument target_frame does not exist. )
+[amcl-2] [INFO] [1795733263.412731926] [amcl]: Message Filter dropping message: frame 'lidar_link' at time 20.900 for reason 'the timestamp on the message is earlier than all the data in the transform cache'
+[amcl-2] [ERROR] [1795733263.426447343] [amcl]: Couldn't transform from lidar_link to chassis, even though the message notifier is in use: ("chassis" passed to lookupTransform argument target_frame does not exist. )
+[amcl-2] [ERROR] [1795733263.626260259] [amcl]: Couldn't transform from lidar_link to chassis, even though the message notifier is in use: ("chassis" passed to lookupTransform argument target_frame does not exist. )
+[amcl-2] [ERROR] [1795733263.827468093] [amcl]: Couldn't transform from lidar_link to chassis, even though the message notifier is in use: ("chassis" passed to lookupTransform argument target_frame does not exist. )
+[amcl-2] [ERROR] [1795733264.027330010] [amcl]: Couldn't transform from lidar_link to chassis, even though the message notifier is in use: ("chassis" passed to lookupTransform argument target_frame does not exist. )
+[amcl-2] [ERROR] [1795733264.230288510] [amcl]: Couldn't transform from lidar_link to chassis, even though the message notifier is in use: ("chassis" passed to lookupTransform argument target_frame does not exist. )
+
+## измеритель (первая ошибка tf2)
+[INFO] [1795733262.677039801] [measure_localization]: t0 = 20.354 с (первый /clock)
+[WARN] [1795733272.664759680] [measure_localization]: map→odom недоступно: "map" passed to lookupTransform argument target_frame does not exist. 

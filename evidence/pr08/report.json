@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "practice_id": "PR08",
+  "commit": "e5cca281fa1888b68f620727b5c2d6e14155c124",
+  "course_kit": {
+    "version": "v1-w12",
+    "archive_sha256": "525e86f818ffed166e7f7b67cc87fdd3f3ea840d13aa90e76bde9fda0f3c9c5a"
+  },
+  "commands": [
+    "sha256sum .course-kit/v1/fixtures/pr08/map.yaml .course-kit/v1/fixtures/pr08/map.pgm",
+    "ros2 bag info /home/ubuntu/bags/pr07-sensors",
+    "colcon build --symlink-install --packages-select localization_case",
+    "ros2 launch localization_case localization.launch.py params_file:=$PWD/src/localization_case/config/amcl.yaml map:=$PWD/.course-kit/v1/fixtures/pr08/map.yaml",
+    "ros2 lifecycle get /map_server",
+    "ros2 lifecycle get /amcl",
+    "ros2 run localization_case measure_localization.py --ros-args -p use_sim_time:=true -p output:=/tmp/metrics.json",
+    "ros2 bag play /home/ubuntu/bags/pr07-sensors --topics /vehicle/scan /vehicle/odom /tf /tf_static /clock",
+    "ros2 topic echo /amcl_pose --once",
+    "ros2 run tf2_ros tf2_echo map odom --ros-args -p use_sim_time:=true",
+    "ros2 run tf2_tools view_frames --ros-args -p use_sim_time:=true",
+    "ros2 launch localization_case localization.launch.py params_file:=$PWD/evidence/pr08/amcl-defect.yaml map:=$PWD/.course-kit/v1/fixtures/pr08/map.yaml",
+    "ros2 run localization_case make_localization_report.py --metrics evidence/pr08/metrics-raw.json --map-yaml evidence/pr08/map.yaml --map-pgm evidence/pr08/map.pgm --bag /home/ubuntu/bags/pr07-sensors --symptom ... --output evidence/pr08/localization.json",
+    "python3 .course-kit/v1/tools/validate_localization.py evidence/pr08/localization.json --schema .course-kit/v1/fixtures/pr08/localization-result-v1.schema.json --map-yaml evidence/pr08/map.yaml --map-pgm evidence/pr08/map.pgm",
+    "colcon test --packages-select localization_case",
+    "colcon test-result --verbose",
+    "python3 .course-kit/v1/tools/check_practice.py PR08 --submission ."
+  ],
+  "tests": [
+    {
+      "name": "test_metrics: окно [t0+10, t0+30) по первому /clock, 200 шагов 0.1 с",
+      "status": "passed"
+    },
+    {
+      "name": "test_metrics: cov[0]+cov[7], доля и медиана, сборка отчёта по схеме",
+      "status": "passed"
+    },
+    {
+      "name": "test_launch: аргументы params_file/map, три ноды с именами из YAML, base_frame_id=base_link",
+      "status": "passed"
+    },
+    {
+      "name": "validate_localization.py: схема, метрики и SHA-256 карты корректны",
+      "status": "passed"
+    },
+    {
+      "name": "live: map->odom 200/200, /amcl_pose 66, медиана ковариации 0.0427 м2",
+      "status": "passed"
+    }
+  ],
+  "defect": {
+    "reproducer": "evidence/pr08/amcl-defect.yaml (base_frame_id: chassis), та же карта и запись: amcl active, но на каждом скане ERROR \"Couldn't transform from lidar_link to chassis ... 'chassis' passed to lookupTransform argument target_frame does not exist\"; /amcl_pose нет; tf2_echo map odom — Invalid frame ID \"map\" ... frame does not exist; измеритель после разгона — map→odom недоступно.",
+    "root_cause": "AMCL выражает скан в base_frame_id. Frame chassis отсутствует в дереве (робот описан как base_link), поэтому фильтр не обновляется и AMCL не публикует ни /amcl_pose, ни map->odom; карта, запись и пакеты Nav2 исправны.",
+    "proof_after": "base_frame_id возвращён на base_link без изменения карты, записи, начальной позы и окна: map_server и amcl active, tf2_echo map odom выдаёт преобразование, view_frames: map->odom->base_link->lidar_link; доступность map->odom 200/200 = 1.0, 66 /amcl_pose, медиана cov[0]+cov[7] = 0.0427 м2; validate_localization.py — корректно."
+  },
+  "claims": {
+    "public_tests_passed": true,
+    "defect_reproduced": true,
+    "defect_fixed": true
+  },
+  "time": {
+    "contact_academic_hours": 2,
+    "self_study_hours": 2.5
+  },
+  "ai_used": true
+}

@@ -85,3 +85,14 @@
 | Claude Opus 5.5 (`claude-opus-5-5`) | Claude Code (desktop app), `docker exec` в контейнер `ros2` | `evidence/pr07/*` | **запустил опыт сам**: обновил пакеты контейнера (`apt-get upgrade`, ackermann_msgs), headless-запуск, частоты, команда на обеих сторонах моста, запись, дефект моста; оформил отчёт | выводы — реальные результаты прогона; запись (353 МиБ) хранится вне Git |
 
 Команды ROS 2 / Gazebo для evidence этой ПР запускал ИИ-агент в моём контейнере.
+
+## PR08
+
+- Использован ИИ: да (`ai_used: true` в отчёте этой ПР).
+
+| Модель | Инструмент / среда | Компонент | Характер помощи | Как проверено |
+|--------|--------------------|-----------|-----------------|---------------|
+| Claude Opus 5.5 (`claude-opus-5-5`) | Claude Code (desktop app) | `src/localization_case` (CMake-пакет, `localization.launch.py`, `measure_localization.py`, `make_localization_report.py`, тесты) | launch трёх нод Nav2, нода измерения по /clock, сборка отчёта по схеме | `colcon test` (11 тестов), `validate_localization.py` |
+| Claude Opus 5.5 (`claude-opus-5-5`) | Claude Code (desktop app), `docker exec` в контейнер `ros2` | `evidence/pr08/*` | **запустил опыт сам**: установил Nav2 в контейнер, replay записи ПР07, дефект `chassis`, измерение и отчёт | метрики записаны измерителем из живого прогона; валидатор курса — корректно |
+
+Команды ROS 2 для evidence этой ПР запускал ИИ-агент в моём контейнере.

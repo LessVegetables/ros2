@@ -1,0 +1,69 @@
+# ИСПРАВЛЕНО: src/localization_case/config/amcl.yaml (base_frame_id: base_link), та же карта и запись
+
+$ ros2 launch localization_case localization.launch.py params_file:=$PWD/src/localization_case/config/amcl.yaml map:=$PWD/.course-kit/v1/fixtures/pr08/map.yaml
+
+$ ros2 lifecycle get /map_server
+active [3]
+
+$ ros2 lifecycle get /amcl
+active [3]
+
+$ ros2 run localization_case measure_localization.py --ros-args -p use_sim_time:=true -p output:=/tmp/metrics.json
+
+$ ros2 bag play /home/ubuntu/bags/pr07-sensors --topics /vehicle/scan /vehicle/odom /tf /tf_static /clock
+
+$ ros2 topic echo /amcl_pose --once
+header:
+  stamp:
+    sec: 34
+    nanosec: 500000000
+  frame_id: map
+pose:
+  pose:
+    position:
+      x: 2.6311623743193304
+      y: -0.015308938544165238
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+  covariance:
+  - 0.03827258345565432
+
+$ ros2 run tf2_ros tf2_echo map odom --ros-args -p use_sim_time:=true
+At time 38.300000000
+- Translation: [-0.215, 0.022, 0.000]
+- Rotation: in RPY (degree) [0.000, 0.000, -1.129]
+
+$ ros2 run tf2_ros tf2_echo map lidar_link --ros-args -p use_sim_time:=true
+At time 40.197000000
+- Translation: [4.002, -0.079, 0.380]
+
+$ (cd /tmp && ros2 run tf2_tools view_frames --ros-args -p use_sim_time:=true)
+"map" -> "odom"[label=" Broadcaster: default_authority\nAverage rate: 10.204\nBuffer length: 4.9\nMost recent transform: 49.2\nOldest transform: 44.3\n"];
+"odom" -> "base_link"[label=" Broadcaster: default_authority\nAverage rate: 50.2\nBuffer length: 5.0\nMost recent transform: 49.097\nOldest transform: 44.097\n"];
+"base_link" -> "camera_link"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"camera_link" -> "camera_optical_frame"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"base_link" -> "imu_link"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"base_link" -> "lidar_link"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+}->"map";
+
+$ ros2 topic echo /vehicle/scan --once --field header  / /vehicle/odom / /clock (сопоставление stamp)
+stamp:
+  sec: 50
+  nanosec: 300000000
+frame_id: lidar_link
+---
+stamp:
+  sec: 51
+  nanosec: 437000000
+frame_id: odom
+---
+sec: 52
+nanosec: 505000000
+---
+player exit=0
+
+## измеритель
+[measure_localization]: t0 = 20.354 с (первый /clock)
+[measure_localization]: метрики записаны в /tmp/metrics.json: {"tf_queries_total": 200, "tf_queries_successful": 200, "tf_availability": 1.0, "amcl_pose_samples": 66, "median_xy_covariance_m2": 0.04265722850440093, "t0_s": 20.354, "warmup_s": 10.0, "duration_s": 20.0, "slots_observed": 200, "time_went_back": false, "first_tf_error": null}

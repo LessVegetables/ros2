@@ -1,0 +1,13 @@
+{
+  "tf_queries_total": 200,
+  "tf_queries_successful": 200,
+  "tf_availability": 1.0,
+  "amcl_pose_samples": 66,
+  "median_xy_covariance_m2": 0.04265722850440093,
+  "t0_s": 20.354,
+  "warmup_s": 10.0,
+  "duration_s": 20.0,
+  "slots_observed": 200,
+  "time_went_back": false,
+  "first_tf_error": null
+}

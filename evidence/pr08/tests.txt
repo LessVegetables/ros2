@@ -1,0 +1,94 @@
+$ colcon build --symlink-install --packages-select localization_case
+Starting >>> localization_case
+Finished <<< localization_case [0.12s]
+
+Summary: 1 package finished [0.28s]
+exit=0
+
+$ colcon test --packages-select localization_case --event-handlers console_direct+
+Starting >>> localization_case
+SetCTestConfiguration:BuildDirectory:/home/ubuntu/ros2_local/build/localization_case
+UpdateCTestConfiguration  from :/home/ubuntu/ros2_local/build/localization_case/CTestConfiguration.ini
+Parse Config file:/home/ubuntu/ros2_local/build/localization_case/CTestConfiguration.ini
+SetCMakeVariable:CTEST_SITE:799860a50179
+SetCMakeVariable:CTEST_SOURCE_DIRECTORY:/home/ubuntu/ros2_local/src/localization_case
+SetCMakeVariable:CTEST_BINARY_DIRECTORY:/home/ubuntu/ros2_local/build/localization_case
+SetCMakeVariable:CTEST_CONFIGURE_COMMAND:"/usr/bin/cmake" "/home/ubuntu/ros2_local/src/localization_case"
+SetCMakeVariable:CTEST_TEST_TIMEOUT:10000000
+UpdateCTestConfiguration  from :/home/ubuntu/ros2_local/build/localization_case/CTestConfiguration.ini
+Parse Config file:/home/ubuntu/ros2_local/build/localization_case/CTestConfiguration.ini
+SetCMakeVariable:CTEST_SITE:799860a50179
+SetCMakeVariable:CTEST_SOURCE_DIRECTORY:/home/ubuntu/ros2_local/src/localization_case
+SetCMakeVariable:CTEST_BINARY_DIRECTORY:/home/ubuntu/ros2_local/build/localization_case
+SetCMakeVariable:CTEST_CONFIGURE_COMMAND:"/usr/bin/cmake" "/home/ubuntu/ros2_local/src/localization_case"
+SetCTestConfiguration:BuildDirectory:/home/ubuntu/ros2_local/build/localization_case
+SetCTestConfiguration:SourceDirectory:/home/ubuntu/ros2_local/src/localization_case
+Test project /home/ubuntu/ros2_local/build/localization_case
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 1
+    Start 1: test_metrics
+
+1: Test command: /usr/bin/python3 "-u" "/opt/ros/lyrical/share/ament_cmake_test/cmake/run_test.py" "/home/ubuntu/ros2_local/build/localization_case/test_results/localization_case/test_metrics.xunit.xml" "--package-name" "localization_case" "--output-file" "/home/ubuntu/ros2_local/build/localization_case/ament_cmake_pytest/test_metrics.txt" "--env" "PYTHONDONTWRITEBYTECODE=1" "--command" "/usr/bin/python3" "-u" "-m" "pytest" "/home/ubuntu/ros2_local/src/localization_case/test/test_metrics.py" "-o" "cache_dir=/home/ubuntu/ros2_local/build/localization_case/ament_cmake_pytest/test_metrics/.cache" "--junit-xml=/home/ubuntu/ros2_local/build/localization_case/test_results/localization_case/test_metrics.xunit.xml" "--junit-prefix=localization_case"
+1: Working Directory: /home/ubuntu/ros2_local/build/localization_case
+1: Test timeout computed to be: 60
+1: -- run_test.py: extra environment variables:
+1:  - PYTHONDONTWRITEBYTECODE=1
+1: -- run_test.py: invoking following command in '/home/ubuntu/ros2_local/build/localization_case':
+1:  - /usr/bin/python3 -u -m pytest /home/ubuntu/ros2_local/src/localization_case/test/test_metrics.py -o cache_dir=/home/ubuntu/ros2_local/build/localization_case/ament_cmake_pytest/test_metrics/.cache --junit-xml=/home/ubuntu/ros2_local/build/localization_case/test_results/localization_case/test_metrics.xunit.xml --junit-prefix=localization_case
+1: ============================= test session starts ==============================
+1: platform linux -- Python 3.14.4, pytest-9.0.2, pluggy-1.6.0
+1: cachedir: build/localization_case/ament_cmake_pytest/test_metrics/.cache
+1: rootdir: /home/ubuntu/ros2_local
+1: plugins: ament_copyright-0.20.6, ament_pep257-0.20.6, ament_xmllint-0.20.6, ament_lint-0.20.6, ament_mypy-0.20.6, launch_testing-3.9.8, ament_flake8-0.20.6, launch_testing_ros-0.29.9, typeguard-4.4.4, colcon-core-0.21.3, cov-5.0.0
+1: collected 6 items
+1: 
+1: ../../src/localization_case/test/test_metrics.py ......                  [100%]
+1: 
+1: - generated xml file: /home/ubuntu/ros2_local/build/localization_case/test_results/localization_case/test_metrics.xunit.xml -
+1: ============================== 6 passed in 0.21s ===============================
+1: -- run_test.py: return code 0
+1: -- run_test.py: verify result file '/home/ubuntu/ros2_local/build/localization_case/test_results/localization_case/test_metrics.xunit.xml'
+1/2 Test #1: test_metrics .....................   Passed    0.66 sec
+test 2
+    Start 2: test_launch
+
+2: Test command: /usr/bin/python3 "-u" "/opt/ros/lyrical/share/ament_cmake_test/cmake/run_test.py" "/home/ubuntu/ros2_local/build/localization_case/test_results/localization_case/test_launch.xunit.xml" "--package-name" "localization_case" "--output-file" "/home/ubuntu/ros2_local/build/localization_case/ament_cmake_pytest/test_launch.txt" "--env" "PYTHONDONTWRITEBYTECODE=1" "--command" "/usr/bin/python3" "-u" "-m" "pytest" "/home/ubuntu/ros2_local/src/localization_case/test/test_launch.py" "-o" "cache_dir=/home/ubuntu/ros2_local/build/localization_case/ament_cmake_pytest/test_launch/.cache" "--junit-xml=/home/ubuntu/ros2_local/build/localization_case/test_results/localization_case/test_launch.xunit.xml" "--junit-prefix=localization_case"
+2: Working Directory: /home/ubuntu/ros2_local/build/localization_case
+2: Test timeout computed to be: 60
+2: -- run_test.py: extra environment variables:
+2:  - PYTHONDONTWRITEBYTECODE=1
+2: -- run_test.py: invoking following command in '/home/ubuntu/ros2_local/build/localization_case':
+2:  - /usr/bin/python3 -u -m pytest /home/ubuntu/ros2_local/src/localization_case/test/test_launch.py -o cache_dir=/home/ubuntu/ros2_local/build/localization_case/ament_cmake_pytest/test_launch/.cache --junit-xml=/home/ubuntu/ros2_local/build/localization_case/test_results/localization_case/test_launch.xunit.xml --junit-prefix=localization_case
+2: ============================= test session starts ==============================
+2: platform linux -- Python 3.14.4, pytest-9.0.2, pluggy-1.6.0
+2: cachedir: build/localization_case/ament_cmake_pytest/test_launch/.cache
+2: rootdir: /home/ubuntu/ros2_local
+2: plugins: ament_copyright-0.20.6, ament_pep257-0.20.6, ament_xmllint-0.20.6, ament_lint-0.20.6, ament_mypy-0.20.6, launch_testing-3.9.8, ament_flake8-0.20.6, launch_testing_ros-0.29.9, typeguard-4.4.4, colcon-core-0.21.3, cov-5.0.0
+2: collected 3 items
+2: 
+2: ../../src/localization_case/test/test_launch.py ...                      [100%]
+2: 
+2: - generated xml file: /home/ubuntu/ros2_local/build/localization_case/test_results/localization_case/test_launch.xunit.xml -
+2: ============================== 3 passed in 0.21s ===============================
+2: -- run_test.py: return code 0
+2: -- run_test.py: verify result file '/home/ubuntu/ros2_local/build/localization_case/test_results/localization_case/test_launch.xunit.xml'
+2/2 Test #2: test_launch ......................   Passed    0.66 sec
+
+100% tests passed, 0 tests failed out of 2
+
+Label Time Summary:
+pytest    =   1.32 sec*proc (2 tests)
+
+Total Test time (real) =   1.33 sec
+Finished <<< localization_case [1.39s]
+
+Summary: 1 package finished [1.53s]
+
+$ colcon test-result --test-result-base build/localization_case --verbose
+Summary: 11 tests, 0 errors, 0 failures, 0 skipped
+exit=0

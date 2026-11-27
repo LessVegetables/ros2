@@ -156,3 +156,29 @@ timeout --signal=INT 10s ros2 topic hz /turtle1/cmd_vel --qos-reliability reliab
 ```bash
 python3 .course-kit/v1/tools/check_practice.py PR03 --submission .
 ```
+
+## ПР04. Параметры patrol
+
+Параметры: `linear_speed` (0.5, допустимо 0…1), `turn_rate` (0.3, −1…1),
+`publish_hz` (10.0, 1…30). Недопустимое значение отклоняется до изменения
+состояния; допустимая `publish_hz` пересоздаёт таймер.
+
+```bash
+# A: ros2 launch turtle_bringup sim.launch.py
+# B: ros2 run patrol patrol --ros-args -r cmd_vel:=/turtle1/cmd_vel
+# C:
+ros2 param get /patrol publish_hz
+timeout --signal=INT 10s ros2 topic hz /turtle1/cmd_vel --qos-reliability reliable
+ros2 param set /patrol publish_hz 5.0     # поток 5 Гц
+ros2 param set /patrol publish_hz 0.0     # Setting parameter failed, остаётся прежнее
+ros2 service call /clear std_srvs/srv/Empty "{}"
+ros2 action list -t
+```
+
+Тесты и проверка сдачи:
+
+```bash
+(cd src/patrol && python3 -m pytest test -v)
+colcon test --packages-select patrol && colcon test-result --verbose
+python3 .course-kit/v1/tools/check_practice.py PR04 --submission .
+```

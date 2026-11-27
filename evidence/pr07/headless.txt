@@ -1,0 +1,38 @@
+$ export GZ_SIM_RESOURCE_PATH="$PWD/src/course_simulation/models${GZ_SIM_RESOURCE_PATH:+:$GZ_SIM_RESOURCE_PATH}"
+$ ros2 launch course_simulation simulation.launch.py world:=$PWD/src/course_simulation/worlds/mcity-minimal.sdf bridge_config:=$PWD/src/course_simulation/config/bridge.yaml headless:=true 2>&1 | tee evidence/pr07/headless.txt
+[INFO] [launch]: All log files can be found below /home/ubuntu/.ros/log/2026-11-26-22-38-03-536577-799860a50179-27961
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [gz-1]: process started with pid [27972]
+[INFO] [robot_state_publisher-2]: process started with pid [27973]
+[INFO] [parameter_bridge-3]: process started with pid [27974]
+[INFO] [drive_adapter-4]: process started with pid [27975]
+[INFO] [odom_adapter-5]: process started with pid [27976]
+[robot_state_publisher-2] [WARN] [1795732683.851401671] [kdl_parser]: The root link base_link has an inertia specified in the URDF, but KDL does not support a root link with an inertia.  As a workaround, you can add an extra dummy link to your URDF.
+[robot_state_publisher-2] [INFO] [1795732683.851600838] [sim.robot_state_publisher]: Robot initialized
+[gz-1] [1;33mWarning [Utils.cc:132][0m [/sdf/model[@name="course_ackermann"]/link[@name="camera_link"]/sensor[@name="front_camera"]/gz_frame_id:/home/ubuntu/ros2_local/install/course_simulation/share/course_simulation/models/course_ackermann/model.sdf:L88]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[gz-1] [1;33mWarning [Utils.cc:132][0m [/sdf/model[@name="course_ackermann"]/link[@name="lidar_link"]/sensor[@name="lidar"]/gz_frame_id:/home/ubuntu/ros2_local/install/course_simulation/share/course_simulation/models/course_ackermann/model.sdf:L100]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[gz-1] [1;33mWarning [Utils.cc:132][0m [/sdf/model[@name="course_ackermann"]/link[@name="imu_link"]/sensor[@name="imu"]/gz_frame_id:/home/ubuntu/ros2_local/install/course_simulation/share/course_simulation/models/course_ackermann/model.sdf:L110]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[parameter_bridge-3] [INFO] [1795732684.978305630] [sim.bridge]: Creating ROS->GZ Bridge: [/vehicle/gz_cmd_vel (geometry_msgs/msg/Twist) -> /model/course_ackermann/cmd_vel (gz.msgs.Twist)] (Lazy 0)
+[parameter_bridge-3] [INFO] [1795732684.984293630] [sim.bridge]: Creating GZ->ROS Bridge: [/model/course_ackermann/odometry (gz.msgs.Odometry) -> /vehicle/odom_gz (nav_msgs/msg/Odometry)] (Lazy 0)
+[parameter_bridge-3] [INFO] [1795732684.992010255] [sim.bridge]: Creating GZ->ROS Bridge: [/vehicle/scan (gz.msgs.LaserScan) -> /vehicle/scan (sensor_msgs/msg/LaserScan)] (Lazy 0)
+[parameter_bridge-3] [INFO] [1795732684.996472005] [sim.bridge]: Creating GZ->ROS Bridge: [/vehicle/imu (gz.msgs.IMU) -> /vehicle/imu (sensor_msgs/msg/Imu)] (Lazy 0)
+[parameter_bridge-3] [INFO] [1795732684.998624630] [sim.bridge]: Creating GZ->ROS Bridge: [/vehicle/camera/image_raw (gz.msgs.Image) -> /vehicle/camera/image_raw (sensor_msgs/msg/Image)] (Lazy 0)
+[parameter_bridge-3] [INFO] [1795732684.999657339] [sim.bridge]: Creating GZ->ROS Bridge: [/clock (gz.msgs.Clock) -> /clock (rosgraph_msgs/msg/Clock)] (Lazy 0)
+[gz-1] [1;33mWarning [Utils.cc:132][0m [/sdf/model[@name="course_ackermann"]/link[@name="camera_link"]/sensor[@name="front_camera"]/gz_frame_id:/home/ubuntu/ros2_local/install/course_simulation/share/course_simulation/models/course_ackermann/model.sdf:L88]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[gz-1] [1;33mWarning [Utils.cc:132][0m [/sdf/model[@name="course_ackermann"]/link[@name="lidar_link"]/sensor[@name="lidar"]/gz_frame_id:/home/ubuntu/ros2_local/install/course_simulation/share/course_simulation/models/course_ackermann/model.sdf:L100]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[gz-1] [1;33mWarning [Utils.cc:132][0m [/sdf/model[@name="course_ackermann"]/link[@name="imu_link"]/sensor[@name="imu"]/gz_frame_id:/home/ubuntu/ros2_local/install/course_simulation/share/course_simulation/models/course_ackermann/model.sdf:L110]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[parameter_bridge-3] [INFO] [1795732783.846963926] [sim.bridge]: Passing message from ROS geometry_msgs/msg/Twist to Gazebo gz.msgs.Twist (showing msg only once per type)
+[drive_adapter-4] [WARN] [1795732805.130900672] [sim.drive_adapter]: команда отклонена: stale_command (age=104.101 с)
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [odom_adapter-5]: sending signal 'SIGINT' to process[odom_adapter-5]
+[INFO] [drive_adapter-4]: sending signal 'SIGINT' to process[drive_adapter-4]
+[INFO] [parameter_bridge-3]: sending signal 'SIGINT' to process[parameter_bridge-3]
+[INFO] [robot_state_publisher-2]: sending signal 'SIGINT' to process[robot_state_publisher-2]
+[INFO] [gz-1]: sending signal 'SIGINT' to process[gz-1]
+[parameter_bridge-3] [INFO] [1795732808.434059340] [rclcpp]: signal_handler(signum=2)
+[robot_state_publisher-2] [INFO] [1795732808.440148215] [rclcpp]: signal_handler(signum=2)
+[ERROR] [parameter_bridge-3]: process has died [pid 27974, exit code -11, cmd '/opt/ros/lyrical/lib/ros_gz_bridge/parameter_bridge --ros-args -r __node:=bridge -r __ns:=/sim --params-file /tmp/launch_params_k85lf7br --params-file /tmp/launch_params_wmb0b2t1'].
+[INFO] [robot_state_publisher-2]: process has finished cleanly [pid 27973]
+[INFO] [gz-1]: process has finished cleanly [pid 27972]
+[INFO] [drive_adapter-4]: process has finished cleanly [pid 27975]
+[INFO] [odom_adapter-5]: process has finished cleanly [pid 27976]

@@ -1,0 +1,24 @@
+$ ros2 bag info /home/ubuntu/bags/pr07-sensors
+# запись: /home/ubuntu/bags/pr07-sensors внутри контейнера (вне репозитория: 353 МиБ); копия на SSD хоста.
+# recorder был остановлен SIGKILL после того, как не завершился по SIGINT за 60 с; индекс MCAP восстановлен:
+#   ros2 bag reindex /home/ubuntu/bags/pr07-sensors -s mcap
+
+Files:             0_pr07-sensors_2026_11_26-22_42_33.mcap
+Bag size:          352.7 MiB
+Storage id:        mcap
+ROS Distro:        lyrical
+Duration:          35.816000000s
+Start:             Jan  1 1970 00:00:20.363000000 (20.363000000)
+End:               Jan  1 1970 00:00:56.179000000 (56.179000000)
+Messages:          43635
+Topic information: Topic: /clock | Type: rosgraph_msgs/msg/Clock | Count: 35637 | Serialization Format: cdr
+                   Topic: /tf | Type: tf2_msgs/msg/TFMessage | Count: 1779 | Serialization Format: cdr
+                   Topic: /tf_static | Type: tf2_msgs/msg/TFMessage | Count: 1 | Serialization Format: cdr
+                   Topic: /vehicle/camera/image_raw | Type: sensor_msgs/msg/Image | Count: 526 | Serialization Format: cdr
+                   Topic: /vehicle/imu | Type: sensor_msgs/msg/Imu | Count: 3558 | Serialization Format: cdr
+                   Topic: /vehicle/odom | Type: nav_msgs/msg/Odometry | Count: 1779 | Serialization Format: cdr
+                   Topic: /vehicle/scan | Type: sensor_msgs/msg/LaserScan | Count: 355 | Serialization Format: cdr
+Services:          0
+Service information: 
+Actions:           0
+Action information: 

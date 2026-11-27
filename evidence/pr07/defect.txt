@@ -1,0 +1,54 @@
+# ДЕФЕКТ: копия моста evidence/pr07/bridge-defect.yaml — gz_topic_name команды с опечаткой
+
+$ ros2 launch course_simulation simulation.launch.py world:=$PWD/src/course_simulation/worlds/mcity-minimal.sdf bridge_config:=$PWD/evidence/pr07/bridge-defect.yaml headless:=true
+Creating ROS->GZ Bridge: [/vehicle/gz_cmd_vel (geometry_msgs/msg/Twist) -> /model/course_ackermann/cmd_vel_typo (gz.msgs.Twist)] (Lazy 0)
+
+$ ros2 topic info -v /vehicle/gz_cmd_vel
+Publisher count: 1
+Node name: drive_adapter
+Node namespace: /sim
+Endpoint type: PUBLISHER
+Subscription count: 1
+Node name: bridge
+Node namespace: /sim
+Endpoint type: SUBSCRIPTION
+
+$ ros2 topic echo /vehicle/gz_cmd_vel --once
+linear:
+  x: 0.6000000238418579
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 0.0
+---
+
+$ gz topic -i -t /model/course_ackermann/cmd_vel
+No publishers on topic [/model/course_ackermann/cmd_vel]
+Subscribers [Address, Message Type]:
+  tcp://172.17.0.2:40619, gz.msgs.Twist
+
+$ gz topic -l   (топики с cmd_vel)
+/model/course_ackermann/cmd_vel_typo
+/model/course_ackermann/cmd_vel
+
+$ gz topic -i -t /model/course_ackermann/cmd_vel_typo
+Publishers [Address, Message Type]:
+  tcp://172.17.0.2:42919, gz.msgs.Twist
+No subscribers on topic [/model/course_ackermann/cmd_vel_typo]
+
+$ timeout 3s gz topic -e -t /model/course_ackermann/cmd_vel -n 1
+exit=137
+
+$ ros2 topic echo /vehicle/odom --once --field pose.pose.position
+x: -4.824362304333561e-16
+y: 8.793351253816865e-41
+z: 0.0
+---
+
+$ ros2 topic echo /vehicle/odom --once --field pose.pose.position   (через 5 с)
+x: -4.836162961923241e-16
+y: 8.84000955089507e-41
+z: 0.0
+---

@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "world": "src/course_simulation/worlds/mcity-minimal.sdf",
+  "course_kit": "v1-w12",
+  "headless": "gz sim -s -r --headless-rendering (OGRE2/EGL), без окна клиента",
+  "real_time_factor_measured": 0.912,
+  "rtf_method": "/clock 75.239 -> 85.485 с за 11.229 с стенного времени",
+  "sensor_parameter_changed": {
+    "sensor": "front_camera",
+    "parameter": "update_rate",
+    "from": 20,
+    "to": 15
+  },
+  "sensors": [
+    {
+      "topic": "/vehicle/camera/image_raw",
+      "type": "sensor_msgs/msg/Image",
+      "frame_id": "camera_link",
+      "stamp_source": "sim_time (/clock)",
+      "declared_hz": 15,
+      "measured_hz_wall_clock": 12.07,
+      "measured_hz_sim_time_from_bag": 14.69,
+      "qos": "best_effort, keep_last(10)",
+      "note": "update_rate изменён 20 -> 15 Гц; рендеринг 640x360 на CPU (EGL) ограничивает частоту при RTF<1"
+    },
+    {
+      "topic": "/vehicle/scan",
+      "type": "sensor_msgs/msg/LaserScan",
+      "frame_id": "lidar_link",
+      "stamp_source": "sim_time (/clock)",
+      "declared_hz": 10,
+      "measured_hz_wall_clock": 9.16,
+      "measured_hz_sim_time_from_bag": 9.91,
+      "qos": "best_effort, keep_last(10)"
+    },
+    {
+      "topic": "/vehicle/imu",
+      "type": "sensor_msgs/msg/Imu",
+      "frame_id": "imu_link",
+      "stamp_source": "sim_time (/clock)",
+      "declared_hz": 100,
+      "measured_hz_wall_clock": 91.19,
+      "measured_hz_sim_time_from_bag": 99.34,
+      "qos": "best_effort, keep_last(10)"
+    },
+    {
+      "topic": "/vehicle/odom",
+      "type": "nav_msgs/msg/Odometry",
+      "frame_id": "odom (child base_link)",
+      "stamp_source": "sim_time (/clock)",
+      "declared_hz": 50,
+      "measured_hz_wall_clock": 45.84,
+      "measured_hz_sim_time_from_bag": 49.67,
+      "qos": "reliable, keep_last(10)",
+      "note": "публикует odom_adapter из /vehicle/odom_gz"
+    }
+  ],
+  "odometry_source": {
+    "topic": "/vehicle/odom_gz",
+    "gz_topic": "/model/course_ackermann/odometry",
+    "header.frame_id": "course_ackermann/odom",
+    "child_frame_id": "course_ackermann/base_link",
+    "normalized_to": {
+      "topic": "/vehicle/odom",
+      "header.frame_id": "odom",
+      "child_frame_id": "base_link"
+    }
+  },
+  "command_path": {
+    "input": "/drive/safe (ackermann_msgs/msg/AckermannDriveStamped, reliable)",
+    "adapter": "drive_adapter: v=clamp(speed,0,1.2), delta=clamp(angle,-0.45,0.45), w=v*tan(delta)/0.8",
+    "ros_output": "/vehicle/gz_cmd_vel (geometry_msgs/msg/Twist, reliable)",
+    "gz_topic": "/model/course_ackermann/cmd_vel (gz.msgs.Twist) -> AckermannSteering",
+    "observed": {
+      "speed": 0.6,
+      "steering_angle": 0.2,
+      "ros_twist": [
+        0.6,
+        0.152033
+      ],
+      "gz_twist": [
+        0.6,
+        0.152033
+      ]
+    }
+  },
+  "tf_owners": [
+    {
+      "parent": "odom",
+      "child": "base_link",
+      "owner": "odom_adapter",
+      "topic": "/tf"
+    },
+    {
+      "parent": "base_link",
+      "child": "camera_link|lidar_link|imu_link",
+      "owner": "robot_state_publisher",
+      "topic": "/tf_static"
+    }
+  ]
+}

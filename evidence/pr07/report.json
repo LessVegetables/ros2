@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "practice_id": "PR07",
+  "commit": "a8763e3c9c2cd04d37e86a6c03c9caa074565ef8",
+  "course_kit": {
+    "version": "v1-w12",
+    "archive_sha256": "525e86f818ffed166e7f7b67cc87fdd3f3ea840d13aa90e76bde9fda0f3c9c5a"
+  },
+  "commands": [
+    "colcon build --symlink-install --packages-up-to course_simulation",
+    "export GZ_SIM_RESOURCE_PATH=\"$PWD/src/course_simulation/models${GZ_SIM_RESOURCE_PATH:+:$GZ_SIM_RESOURCE_PATH}\"",
+    "gz sdf -k src/course_simulation/models/course_ackermann/model.sdf",
+    "ros2 launch course_simulation simulation.launch.py world:=$PWD/src/course_simulation/worlds/mcity-minimal.sdf bridge_config:=$PWD/src/course_simulation/config/bridge.yaml headless:=true",
+    "ros2 topic info -v /vehicle/gz_cmd_vel",
+    "gz topic -i -t /model/course_ackermann/cmd_vel",
+    "ros2 topic echo /clock --once",
+    "ros2 topic hz /vehicle/scan",
+    "ros2 run course_simulation drive_source --ros-args -p use_sim_time:=true -p speed:=0.6 -p steering_angle:=0.2",
+    "ros2 topic echo /vehicle/gz_cmd_vel --once",
+    "timeout 3s gz topic -e -t /model/course_ackermann/cmd_vel -n 1",
+    "ros2 topic echo /vehicle/odom --once",
+    "ros2 run tf2_ros tf2_echo odom base_link --ros-args -p use_sim_time:=true",
+    "timeout --preserve-status --signal=INT --kill-after=60s 40s ros2 bag record --storage mcap --use-sim-time -o /home/ubuntu/bags/pr07-sensors --topics /vehicle/camera/image_raw /vehicle/scan /vehicle/imu /vehicle/odom /tf /tf_static /clock",
+    "ros2 bag reindex /home/ubuntu/bags/pr07-sensors -s mcap",
+    "ros2 bag info /home/ubuntu/bags/pr07-sensors",
+    "ros2 launch course_simulation simulation.launch.py ... bridge_config:=$PWD/evidence/pr07/bridge-defect.yaml headless:=true",
+    "colcon test --packages-select course_simulation",
+    "colcon test-result --verbose",
+    "python3 .course-kit/v1/tools/check_practice.py PR07 --submission ."
+  ],
+  "tests": [
+    {
+      "name": "test_drive_logic: прямо, поворот (w=v*tan(d)/0.8), пределы, v=0, задний ход -> 0",
+      "status": "passed"
+    },
+    {
+      "name": "test_drive_logic: устаревшая (>0.25 с) и нечисловая команда -> нулевой Twist",
+      "status": "passed"
+    },
+    {
+      "name": "test_drive_logic: снятие префикса course_ackermann/",
+      "status": "passed"
+    },
+    {
+      "name": "test_odom_adapter: frames нормализованы, stamp/pose/twist/covariance сохранены, tf с тем же stamp",
+      "status": "passed"
+    },
+    {
+      "name": "test_odom_adapter: другой префикс и NaN/inf отклоняются",
+      "status": "passed"
+    },
+    {
+      "name": "lint: flake8, pep257, xmllint",
+      "status": "passed"
+    },
+    {
+      "name": "lint: copyright (сгенерированный пропуск)",
+      "status": "skipped"
+    },
+    {
+      "name": "live: headless-сервер с камерой/лидаром (EGL), /clock растёт, RTF 0.91",
+      "status": "passed"
+    },
+    {
+      "name": "live: команда видна в /vehicle/gz_cmd_vel и в gz /model/course_ackermann/cmd_vel, одометрия и tf odom->base_link меняются",
+      "status": "passed"
+    },
+    {
+      "name": "record: 35.8 с по /clock, 7 топиков, все с ненулевым числом сообщений",
+      "status": "passed"
+    }
+  ],
+  "defect": {
+    "reproducer": "Копия моста evidence/pr07/bridge-defect.yaml: gz_topic_name команды = /model/course_ackermann/cmd_vel_typo. При drive_source speed=0.6: ros2 topic info -v /vehicle/gz_cmd_vel — издатель drive_adapter и подписчик bridge (ROS-сторона выглядит исправной), echo /vehicle/gz_cmd_vel — linear.x=0.6; но gz topic -i -t /model/course_ackermann/cmd_vel — 'No publishers', подписчик только AckermannSteering; gz topic -l показывает лишний /model/course_ackermann/cmd_vel_typo без подписчиков; gz topic -e cmd_vel — ни одного сообщения; /vehicle/odom x=-4.8e-16 и через 5 с то же — робот стоит.",
+    "root_cause": "Мост соединяет пару (ros_topic_name, gz_topic_name) по точному имени. Опечатка в gz_topic_name создала новый Gazebo-топик без подписчиков, а плагин AckermannSteering слушает /model/course_ackermann/cmd_vel. ROS-сторона (тип, QoS, участники) корректна, поэтому ros2 topic info -v ошибку не показывает: обрыв виден только при сравнении с gz topic -i/-e и YAML.",
+    "proof_after": "Исправленный src/course_simulation/config/bridge.yaml (тот же один мост): gz topic -i cmd_vel — есть издатель (мост) и подписчик; gz topic -e cmd_vel — linear.x 0.6, angular.z 0.152 — те же значения, что в /vehicle/gz_cmd_vel; /vehicle/odom и tf2_echo odom base_link меняются; поза корпуса в Gazebo dynamic_pose тоже. Запись 35.8 с по /clock содержит все 7 топиков; при прямой команде odom x=7.333 и Gazebo x=7.390."
+  },
+  "claims": {
+    "public_tests_passed": true,
+    "defect_reproduced": true,
+    "defect_fixed": true,
+    "headless_verified": true,
+    "recording_verified": true,
+    "odometry_tf_owned": true
+  },
+  "time": {
+    "contact_academic_hours": 2,
+    "self_study_hours": 2.5
+  },
+  "ai_used": true
+}

@@ -1,0 +1,349 @@
+# RUN 1 · проверки при работающем simulation.launch.py (headless)
+
+$ ros2 node list --no-daemon --spin-time 2
+/sim/bridge
+/sim/drive_adapter
+/sim/odom_adapter
+/sim/robot_state_publisher
+
+$ ros2 topic info -v /vehicle/gz_cmd_vel
+Type: geometry_msgs/msg/Twist
+Publisher count: 1
+Node name: drive_adapter
+Node namespace: /sim
+Topic type: geometry_msgs/msg/Twist
+Endpoint type: PUBLISHER
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (10)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+Subscription count: 1
+Node name: bridge
+Node namespace: /sim
+Topic type: geometry_msgs/msg/Twist
+Endpoint type: SUBSCRIPTION
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (10)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+$ gz topic -i -t /model/course_ackermann/cmd_vel
+Publishers [Address, Message Type]:
+  tcp://172.17.0.2:46385, gz.msgs.Twist
+Subscribers [Address, Message Type]:
+  tcp://172.17.0.2:38009, gz.msgs.Twist
+
+$ ros2 topic echo /clock --once
+clock:
+  sec: 24
+  nanosec: 63000000
+---
+
+$ ros2 topic info -v /vehicle/camera/image_raw
+Type: sensor_msgs/msg/Image
+Publisher count: 1
+Node name: bridge
+Node namespace: /sim
+Topic type: sensor_msgs/msg/Image
+Endpoint type: PUBLISHER
+QoS profile:
+  Reliability: BEST_EFFORT
+  History (Depth): KEEP_LAST (5)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+Subscription count: 0
+
+$ ros2 topic info -v /vehicle/scan
+Type: sensor_msgs/msg/LaserScan
+Publisher count: 1
+Node name: bridge
+Node namespace: /sim
+Topic type: sensor_msgs/msg/LaserScan
+Endpoint type: PUBLISHER
+QoS profile:
+  Reliability: BEST_EFFORT
+  History (Depth): KEEP_LAST (5)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+Subscription count: 0
+
+$ ros2 topic info -v /vehicle/imu
+Type: sensor_msgs/msg/Imu
+Publisher count: 1
+Node name: bridge
+Node namespace: /sim
+Topic type: sensor_msgs/msg/Imu
+Endpoint type: PUBLISHER
+QoS profile:
+  Reliability: BEST_EFFORT
+  History (Depth): KEEP_LAST (5)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+Subscription count: 0
+
+$ ros2 topic info -v /vehicle/odom_gz
+Type: nav_msgs/msg/Odometry
+Publisher count: 1
+Node name: bridge
+Node namespace: /sim
+Topic type: nav_msgs/msg/Odometry
+Endpoint type: PUBLISHER
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (10)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+Subscription count: 1
+Node name: odom_adapter
+Node namespace: /sim
+Topic type: nav_msgs/msg/Odometry
+Endpoint type: SUBSCRIPTION
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (10)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+$ ros2 topic info -v /vehicle/odom
+Type: nav_msgs/msg/Odometry
+Publisher count: 1
+Node name: odom_adapter
+Node namespace: /sim
+Topic type: nav_msgs/msg/Odometry
+Endpoint type: PUBLISHER
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (10)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+Subscription count: 0
+
+$ ros2 topic info -v /drive/safe
+Type: ackermann_msgs/msg/AckermannDriveStamped
+Publisher count: 0
+Subscription count: 1
+Node name: drive_adapter
+Node namespace: /sim
+Topic type: ackermann_msgs/msg/AckermannDriveStamped
+Endpoint type: SUBSCRIPTION
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (10)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+$ ros2 topic hz /vehicle/camera/image_raw   (10 с стенного времени)
+average rate: 12.065
+	min: 0.065s max: 0.305s std dev: 0.03506s window: 70
+
+$ ros2 topic echo /vehicle/camera/image_raw --once --field header
+stamp:
+  sec: 37
+  nanosec: 422000000
+frame_id: camera_link
+---
+
+$ ros2 topic hz /vehicle/scan   (10 с стенного времени)
+average rate: 9.163
+	min: 0.090s max: 0.125s std dev: 0.00650s window: 82
+
+$ ros2 topic echo /vehicle/scan --once --field header
+stamp:
+  sec: 48
+  nanosec: 800000000
+frame_id: lidar_link
+---
+
+$ ros2 topic hz /vehicle/imu   (10 с стенного времени)
+average rate: 91.188
+	min: 0.007s max: 0.020s std dev: 0.00239s window: 729
+
+$ ros2 topic echo /vehicle/imu --once --field header
+stamp:
+  sec: 59
+  nanosec: 90000000
+frame_id: imu_link
+---
+
+$ ros2 topic hz /vehicle/odom   (10 с стенного времени)
+average rate: 45.838
+	min: 0.016s max: 0.033s std dev: 0.00317s window: 274
+
+$ ros2 topic echo /vehicle/odom --once --field header
+stamp:
+  sec: 69
+  nanosec: 658000000
+frame_id: odom
+---
+
+$ ros2 topic echo /vehicle/odom_gz --once --field header / child_frame_id
+stamp:
+  sec: 70
+  nanosec: 658000000
+frame_id: course_ackermann/odom
+---
+course_ackermann/base_link
+---
+
+$ ros2 topic echo /clock --once  (дважды, между ними 10 с стенного времени — RTF)
+sec: 75
+nanosec: 239000000
+---
+1795732771.955893296
+sec: 85
+nanosec: 485000000
+---
+1795732783.185261218
+
+# Команда: drive_source → /drive/safe (speed=0.6, steering_angle=0.2, stamp из /clock)
+
+$ ros2 topic echo /drive/safe --once
+header:
+  stamp:
+    sec: 92
+    nanosec: 0
+  frame_id: base_link
+drive:
+  steering_angle: 0.20000000298023224
+  steering_angle_velocity: 0.0
+  speed: 0.6000000238418579
+  acceleration: 0.0
+  jerk: 0.0
+---
+
+$ ros2 topic echo /vehicle/gz_cmd_vel --once
+linear:
+  x: 0.6000000238418579
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 0.1520325349997548
+---
+
+$ timeout 3s gz topic -e -t /model/course_ackermann/cmd_vel -n 1
+linear {
+  x: 0.60000002384185791
+}
+angular {
+  z: 0.1520325349997548
+}
+
+$ ros2 topic echo /vehicle/odom --once --field pose.pose
+position:
+  x: 3.963976064641185
+  y: 2.4442367467015353
+  z: 0.0
+orientation:
+  x: 0.0
+  y: 0.0
+  z: 0.5519363488785386
+  w: 0.8338862433129763
+---
+
+$ ros2 topic echo /vehicle/odom --once --field pose.pose   (через 4 с)
+position:
+  x: 4.076687321142812
+  y: 5.212903186149909
+  z: 0.0
+orientation:
+  x: 0.0
+  y: 0.0
+  z: 0.8107560857804629
+  w: 0.5853841212143894
+---
+
+$ ros2 run tf2_ros tf2_echo odom base_link --ros-args -p use_sim_time:=true
+At time 100.578000000
+- Translation: [3.771, 5.903, 0.000]
+- Rotation: in RPY (degree) [0.000, -0.000, 119.381]
+At time 101.478000000
+- Translation: [3.475, 6.354, 0.000]
+- Rotation: in RPY (degree) [0.000, -0.000, 127.267]
+
+$ gz topic -e -t /world/mcity_minimal/dynamic_pose/info -n 1  (корпус и колёса в Gazebo)
+  name: "course_ackermann"
+  position {
+    x: 2.07576206926266
+    y: 1.1626178357076293
+  }
+  orientation {
+    x: -4.2573167381746787e-07
+    y: 1.5536768283683332e-08
+  }
+--
+  name: "front_left_wheel"
+  position {
+    x: 0.40000000000000063
+    y: 0.31000000000000028
+  }
+  orientation {
+    x: 0.3511773868454604
+    y: 0.61373813109659892
+  }
+--
+  name: "rear_left_wheel"
+  position {
+    x: -0.39999999999999947
+    y: 0.3100000000000005
+  }
+  orientation {
+    x: 0.41544099522182187
+    y: 0.57219649604192246
+  }
+
+# Устаревшая команда: stamp на 1 с в прошлом → нулевой Twist
+[drive_adapter-4] [WARN] [1795732805.130900672] [sim.drive_adapter]: команда отклонена: stale_command (age=104.101 с)
+
+# RUN 2 · запись (новый запуск)
+# RUN 2 · запись: новый запуск, робот в (0,0,0); drive_source speed=0.2, steering=0
+
+$ timeout --preserve-status --signal=INT --kill-after=60s 40s ros2 bag record --storage mcap --use-sim-time -o /home/ubuntu/bags/pr07-sensors --topics /vehicle/camera/image_raw /vehicle/scan /vehicle/imu /vehicle/odom /tf /tf_static /clock
+record exit=137
+
+$ ros2 topic echo /vehicle/odom --once --field pose.pose.position
+A message was lost!!!
+	total count change:1
+	total count: 1---
+x: 7.333366608871908
+y: 2.6877579873429683e-08
+z: 0.0
+---
+
+$ gz topic -e -t /world/mcity_minimal/dynamic_pose/info -n 1  (корпус)
+  name: "course_ackermann"
+  id: 49
+  position {
+    x: 7.3899669025419383
+    y: 2.8679813134361282e-08
+    z: 0.11999999504180384

@@ -295,3 +295,20 @@ colcon build --symlink-install --packages-select perception_baseline && source i
 colcon test --packages-select perception_baseline && colcon test-result --verbose
 python3 .course-kit/v1/tools/check_practice.py PR09 --submission .
 ```
+
+## ПР10. Адаптер VLM (mock/cache, offline)
+
+Пакеты `src/robotics_course_interfaces` (SceneDescription.msg из kit v1-w12) и
+`src/scene_adapter`; схема `contracts/`, fixtures `fixtures/vlm/` (копии kit
+v1-w12), параметры `config/vlm.yaml`. Нужен `python3-jsonschema`.
+
+```bash
+colcon build --symlink-install --packages-up-to scene_adapter && source install/setup.bash
+colcon test --packages-select scene_adapter --event-handlers console_direct+ && colcon test-result --verbose
+ros2 run scene_adapter check_fixtures
+ros2 interface show robotics_course_interfaces/msg/SceneDescription
+ros2 topic pub -r 20 /clock rosgraph_msgs/msg/Clock "{clock: {sec: 0, nanosec: 100000000}}" &
+ros2 run scene_adapter scene_adapter --ros-args --params-file config/vlm.yaml -p use_sim_time:=true
+ros2 topic echo /perception/scene --once
+python3 .course-kit/v1/tools/check_practice.py PR10 --submission .
+```

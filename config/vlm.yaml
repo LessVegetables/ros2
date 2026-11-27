@@ -1,0 +1,14 @@
+# Параметры ноды scene_adapter (ПР10). Пути относительно корня репозитория.
+scene_adapter:
+  ros__parameters:
+    mode: mock
+    fixture_path: fixtures/vlm/scene-clear.json
+    schema_path: contracts/scene-description-v1.schema.json
+    image_path: ""
+    cache_dir: /tmp/scene_adapter_cache
+    prompt_path: ""
+    model_id: qwen3.8-27b
+    generation_config: '{"temperature": 0.0, "max_tokens": 256}'
+    abstain_threshold: 0.5
+    max_age_s: 0.25
+    publish_period_s: 1.0

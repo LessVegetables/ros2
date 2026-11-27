@@ -1,0 +1,72 @@
+# ПР05 · до исправления: подписчик reliable против издателя best_effort
+
+$ ros2 launch course_bringup patrol.launch.py namespace:=robot_a subscriber_reliability:=reliable record:=false
+
+$ ros2 node list --no-daemon --spin-time 2
+/robot_a/patrol
+/robot_a/pose_relay
+/robot_a/pose_subscriber
+/turtlesim
+exit=0
+
+$ ros2 topic list --no-daemon --spin-time 2
+/parameter_events
+/robot_a/sensor_pose
+/rosout
+/turtle1/cmd_vel
+/turtle1/color_sensor
+/turtle1/pose
+exit=0
+
+$ ros2 topic info /robot_a/sensor_pose --verbose --no-daemon --spin-time 2
+Type: turtlesim_msgs/msg/Pose
+
+Publisher count: 1
+
+Node name: pose_relay
+Node namespace: /robot_a
+Topic type: turtlesim_msgs/msg/Pose
+Topic type hash: RIHS01_37b07ace09a0ed2c5b774b1410dec972dfd1d292de5656ebc2b075ac646e09c8
+Endpoint type: PUBLISHER
+GID: 01.0f.eb.7d.fe.1e.35.e3.00.00.00.00.00.00.13.03
+QoS profile:
+  Reliability: BEST_EFFORT
+  History (Depth): KEEP_LAST (10)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Subscription count: 1
+
+Node name: pose_subscriber
+Node namespace: /robot_a
+Topic type: turtlesim_msgs/msg/Pose
+Topic type hash: RIHS01_37b07ace09a0ed2c5b774b1410dec972dfd1d292de5656ebc2b075ac646e09c8
+Endpoint type: SUBSCRIPTION
+GID: 01.0f.eb.7d.ff.1e.72.3f.00.00.00.00.00.00.13.04
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (10)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+exit=0
+
+$ timeout --signal=INT 3s ros2 topic echo /robot_a/sensor_pose --qos-reliability reliable --once
+[WARN] [1795731228.191215304] [_ros2cli_8102]: New publisher discovered on topic '/robot_a/sensor_pose', offering incompatible QoS. No messages will be received from it. Last incompatible policy: RELIABILITY
+exit=124
+
+## лог launch (pose_subscriber с reliable)
+[launch.user]: namespace=robot_a subscriber_reliability=reliable record=false
+[pose_relay-3]: process started with pid [7934]
+[pose_subscriber-4]: process started with pid [7935]
+[INFO] [1795731213.168960338] [robot_a.pose_subscriber]: pose_subscriber: /robot_a/sensor_pose, reliable
+[INFO] [1795731213.169485296] [robot_a.pose_relay]: pose_relay: /turtle1/pose -> /robot_a/sensor_pose (best_effort)
+[WARN] [1795731213.170047088] [robot_a.pose_relay]: New subscription discovered on topic 'sensor_pose', requesting incompatible QoS. No messages will be sent to it. Last incompatible policy: RELIABILITY
+[WARN] [1795731213.246565046] [robot_a.pose_subscriber]: несовместимый QoS с издателем: total_count=1, last_policy_kind=rmw_qos_policy_kind_t.RMW_QOS_POLICY_RELIABILITY
+[WARN] [1795731228.172877970] [robot_a.pose_relay]: New subscription discovered on topic 'sensor_pose', requesting incompatible QoS. No messages will be sent to it. Last incompatible policy: RELIABILITY

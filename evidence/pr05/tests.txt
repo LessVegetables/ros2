@@ -1,0 +1,22 @@
+$ colcon build --symlink-install
+Starting >>> patrol
+Starting >>> turtle_bringup
+Finished <<< patrol [1.49s]
+Starting >>> course_bringup
+Finished <<< turtle_bringup [1.51s]
+Finished <<< course_bringup [1.04s]
+
+Summary: 3 packages finished [2.69s]
+exit=0
+
+$ colcon test --packages-select patrol course_bringup
+Starting >>> patrol
+Finished <<< patrol [12.5s]
+Starting >>> course_bringup
+Finished <<< course_bringup [1.67s]
+
+Summary: 2 packages finished [14.2s]
+
+$ colcon test-result --verbose
+Summary: 57 tests, 0 errors, 0 failures, 2 skipped
+exit=0

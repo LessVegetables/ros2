@@ -1,0 +1,154 @@
+# ПР05 · после исправления: подписчик best_effort
+
+$ ros2 launch course_bringup patrol.launch.py namespace:=robot_a subscriber_reliability:=best_effort record:=false
+
+$ ros2 topic info /robot_a/sensor_pose --verbose --no-daemon --spin-time 2
+Type: turtlesim_msgs/msg/Pose
+
+Publisher count: 1
+
+Node name: pose_relay
+Node namespace: /robot_a
+Topic type: turtlesim_msgs/msg/Pose
+Topic type hash: RIHS01_37b07ace09a0ed2c5b774b1410dec972dfd1d292de5656ebc2b075ac646e09c8
+Endpoint type: PUBLISHER
+GID: 01.0f.eb.7d.d2.1f.c4.80.00.00.00.00.00.00.13.03
+QoS profile:
+  Reliability: BEST_EFFORT
+  History (Depth): KEEP_LAST (10)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Subscription count: 1
+
+Node name: pose_subscriber
+Node namespace: /robot_a
+Topic type: turtlesim_msgs/msg/Pose
+Topic type hash: RIHS01_37b07ace09a0ed2c5b774b1410dec972dfd1d292de5656ebc2b075ac646e09c8
+Endpoint type: SUBSCRIPTION
+GID: 01.0f.eb.7d.d3.1f.f5.22.00.00.00.00.00.00.13.04
+QoS profile:
+  Reliability: BEST_EFFORT
+  History (Depth): KEEP_LAST (10)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+exit=0
+
+$ timeout --signal=INT 3s ros2 topic echo /robot_a/sensor_pose --qos-reliability best_effort --once
+x: 6.527185440063477
+y: 8.554285049438477
+theta: 2.5055999755859375
+linear_velocity: 0.5
+angular_velocity: 0.30000001192092896
+---
+exit=0
+
+$ ros2 bag record -s mcap -o evidence/pr05/bag --topics /robot_a/sensor_pose   (≈15 с, затем Ctrl+C)
+recorder exit=0
+[INFO] [1795731245.103189672] [rosbag2_recorder]: Topics discovery stopped.
+[INFO] [1795731260.661891846] [rosbag2_cpp]: Writing remaining messages from cache to the bag. It may take a while
+[INFO] [1795731260.668628513] [rosbag2_recorder]: Recording stopped
+[INFO] [1795731260.685018221] [rosbag2_recorder]: Event publisher thread: Exited
+
+## лог launch (pose_subscriber с best_effort)
+[launch.user]: namespace=robot_a subscriber_reliability=best_effort record=false
+[pose_relay-3]: process started with pid [8146]
+[pose_subscriber-4]: process started with pid [8147]
+[INFO] [1795731235.618697501] [robot_a.pose_subscriber]: pose_subscriber: /robot_a/sensor_pose, best_effort
+[INFO] [1795731235.645567960] [robot_a.pose_relay]: pose_relay: /turtle1/pose -> /robot_a/sensor_pose (best_effort)
+[INFO] [1795731236.050099335] [robot_a.pose_subscriber]: count=1 x=5.54 y=5.54 theta=0.00
+[INFO] [1795731236.211070710] [robot_a.pose_subscriber]: count=20 x=5.62 y=5.55 theta=0.04
+[INFO] [1795731236.532727502] [robot_a.pose_subscriber]: count=40 x=5.78 y=5.56 theta=0.14
+
+# Повтор той же записи: живой системы нет, издатель — ros2 bag play с QoS override
+
+$ ros2 bag play evidence/pr05/bag --loop --qos-profile-overrides-path config/qos-overrides.yaml
+
+$ ros2 node list --no-daemon --spin-time 2
+/rosbag2_player
+exit=0
+
+$ ros2 topic info /robot_a/sensor_pose --verbose --no-daemon --spin-time 2
+Type: turtlesim_msgs/msg/Pose
+
+Publisher count: 1
+
+Node name: rosbag2_player
+Node namespace: /
+Topic type: turtlesim_msgs/msg/Pose
+Topic type hash: RIHS01_37b07ace09a0ed2c5b774b1410dec972dfd1d292de5656ebc2b075ac646e09c8
+Endpoint type: PUBLISHER
+GID: 01.0f.eb.7d.88.20.0d.88.00.00.00.00.00.00.13.03
+QoS profile:
+  Reliability: BEST_EFFORT
+  History (Depth): KEEP_LAST (10)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Subscription count: 0
+
+exit=0
+
+$ timeout --signal=INT 3s ros2 topic echo /robot_a/sensor_pose --qos-reliability reliable --once   (повтор, reliable)
+[WARN] [1795731272.486819338] [_ros2cli_8403]: New publisher discovered on topic '/robot_a/sensor_pose', offering incompatible QoS. No messages will be received from it. Last incompatible policy: RELIABILITY
+exit=124
+
+$ timeout --signal=INT 3s ros2 topic echo /robot_a/sensor_pose --qos-reliability best_effort --once   (повтор, best_effort)
+x: 5.576466083526611
+y: 5.54482889175415
+theta: 0.019214700907468796
+linear_velocity: 0.5
+angular_velocity: 0.30000001192092896
+---
+exit=0
+
+$ ros2 bag info evidence/pr05/bag
+
+Files:             0_bag_2026_11_26-22_14_04.mcap
+Bag size:          72.2 KiB
+Storage id:        mcap
+ROS Distro:        lyrical
+Duration:          15.536039341s
+Start:             Nov 26 2026 22:14:05.119849839 (1795731245.119849839)
+End:               Nov 26 2026 22:14:20.655889180 (1795731260.655889180)
+Messages:          972
+Topic information: Topic: /robot_a/sensor_pose | Type: turtlesim_msgs/msg/Pose | Count: 972 | Serialization Format: cdr
+Services:          0
+Service information: 
+Actions:           0
+Action information: 
+exit=0
+
+
+# record:=true — recorder запускается из launch (IfCondition)
+
+$ ros2 launch course_bringup patrol.launch.py namespace:=robot_a record:=true bag_dir:=/tmp/pr05-launch-bag
+[launch.user]: namespace=robot_a subscriber_reliability=best_effort record=true
+[ros2-5]: process started with pid [8475]
+stdin is not a terminal device. Keyboard handling disabled.[INFO] [1795731277.413092715] [rosbag2_recorder]: Press SPACE for pausing/resuming
+[INFO] [1795731277.413192048] [rosbag2_recorder]: Event publisher thread: Started
+[INFO] [1795731277.424951673] [rosbag2_recorder]: Starting recording to '/tmp/pr05-launch-bag'
+[WARN] [1795731277.425008757] [rosbag2_recorder]: No input serialization format specified, using default rmw serialization format: 'cdr'.
+
+$ ros2 bag info /tmp/pr05-launch-bag
+
+Files:             0_pr05-launch-bag_2026_11_26-22_14_37.mcap
+Bag size:          35.8 KiB
+Storage id:        mcap
+ROS Distro:        lyrical
+Duration:          7.136940128s
+Start:             Nov 26 2026 22:14:37.437960507 (1795731277.437960507)
+End:               Nov 26 2026 22:14:44.574900635 (1795731284.574900635)
+Messages:          447
+Topic information: Topic: /robot_a/sensor_pose | Type: turtlesim_msgs/msg/Pose | Count: 447 | Serialization Format: cdr
+exit=0

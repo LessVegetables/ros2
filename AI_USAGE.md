@@ -50,3 +50,15 @@
 
 Команды ROS 2 для evidence этой ПР запускал ИИ-агент в моём контейнере;
 выводы не редактировались, только сокращены повторяющиеся строки.
+
+## PR05
+
+- Использован ИИ: да (`ai_used: true` в отчёте этой ПР).
+
+| Модель | Инструмент / среда | Компонент | Характер помощи | Как проверено |
+|--------|--------------------|-----------|-----------------|---------------|
+| Claude Opus 5.5 (`claude-opus-5-5`) | Claude Code (desktop app) | `src/course_bringup` (`launch/patrol.launch.py`, тест launch), `src/patrol` (`pose_relay.py`, `pose_subscriber.py`, `qos.py`, `test/test_qos.py`), `config/qos-overrides.yaml` | launch с аргументами, namespace, remap и записью по `IfCondition`; ноды ретранслятора и подписчика с настраиваемым QoS | `colcon test`: 57 тестов, 0 ошибок, 2 пропуска (copyright) |
+| Claude Opus 5.5 (`claude-opus-5-5`) | Claude Code (desktop app), `docker exec` в контейнер `ros2` | `evidence/pr05/*` (логи QoS, запись MCAP, `bag-metadata.yaml`, `notes.md`, `report.json`) | **запустил опыт сам**: reliable/best_effort на живом потоке, запись, повтор с override, `record:=true`; оформил разбор | выводы и запись — реальные результаты этого прогона; сценарий воспроизводится командами из `README.md` |
+
+Команды ROS 2 для evidence этой ПР запускал ИИ-агент в моём контейнере;
+выводы не редактировались.

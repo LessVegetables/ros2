@@ -5,7 +5,7 @@ on: [push, pull_request]
 env:
   COURSE_KIT_URL: https://ros.lms.ci.nsu.ru/downloads/robotics-course-kit-v1-w12-525e86f818ff.tar.gz
   COURSE_KIT_SHA256: 525e86f818ffed166e7f7b67cc87fdd3f3ea840d13aa90e76bde9fda0f3c9c5a
-  PRACTICE: PR10
+  PRACTICE: PR11
 
 jobs:
   test:
@@ -52,6 +52,19 @@ jobs:
           mkdir -p .course-kit
           tar -xzf course-kit.tar.gz -C .course-kit
           rm course-kit.tar.gz
+
+      - name: Practice Python checks (PR11+)
+        shell: bash
+        run: |
+          if [ -d labs/pr11 ]; then
+            out="$(mktemp -d)"
+            PYTHONPATH=.course-kit/v1/rl_intro python3 -B -m unittest discover -s labs/pr11/tests -v
+            PYTHONPATH=.course-kit/v1/rl_intro python3 -B labs/pr11/train.py --output "$out/q-table.json"
+            python3 -B .course-kit/v1/rl_intro/evaluate.py --policy "$out/q-table.json" --output "$out/evaluation.json"
+          fi
+          if [ -d labs/pr12/tests ]; then
+            python3 -B -m unittest discover -s labs/pr12/tests -v
+          fi
 
       - name: Check PR evidence
         shell: bash

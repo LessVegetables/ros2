@@ -312,3 +312,16 @@ ros2 run scene_adapter scene_adapter --ros-args --params-file config/vlm.yaml -p
 ros2 topic echo /perception/scene --once
 python3 .course-kit/v1/tools/check_practice.py PR10 --submission .
 ```
+
+## ПР11. Q-learning на дискретной полосе
+
+`labs/pr11/train.py` (α=0.20, γ=0.95, 2000 эпизодов, seed действий 12,
+ε = max(0.05, 1 − i/1200)), тесты `labs/pr11/tests/`. Только стандартная
+библиотека Python ≥ 3.10.
+
+```bash
+PYTHONPATH=.course-kit/v1/rl_intro python3 -B -m unittest discover -s labs/pr11/tests -v
+PYTHONPATH=.course-kit/v1/rl_intro python3 -B labs/pr11/train.py --output evidence/pr11/q-table.json
+python3 -B .course-kit/v1/rl_intro/evaluate.py --policy evidence/pr11/q-table.json --output evidence/pr11/evaluation.json
+python3 .course-kit/v1/tools/check_practice.py PR11 --submission .
+```

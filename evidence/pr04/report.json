@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "practice_id": "PR04",
+  "commit": "eb851bb57703153e98aa2777395e466dc03cef08",
+  "course_kit": {
+    "version": "v1-w12",
+    "archive_sha256": "525e86f818ffed166e7f7b67cc87fdd3f3ea840d13aa90e76bde9fda0f3c9c5a"
+  },
+  "commands": [
+    "colcon build --symlink-install --packages-select turtle_bringup patrol",
+    "ros2 launch turtle_bringup sim.launch.py",
+    "ros2 run patrol patrol --ros-args -r cmd_vel:=/turtle1/cmd_vel",
+    "ros2 param list /patrol --no-daemon --spin-time 2",
+    "ros2 param get /patrol publish_hz --no-daemon --spin-time 2",
+    "timeout --signal=INT 10s ros2 topic hz /turtle1/cmd_vel --qos-reliability reliable",
+    "ros2 param set /patrol publish_hz 5.0",
+    "ros2 param set /patrol publish_hz 0.0",
+    "ros2 param set /patrol publish_hz -1.0",
+    "ros2 param set /patrol publish_hz .nan",
+    "ros2 param set /patrol linear_speed 0.8",
+    "ros2 param set /patrol turn_rate 0.6",
+    "ros2 param set /patrol linear_speed 2.0",
+    "ros2 service call /clear std_srvs/srv/Empty \"{}\" --timeout 5",
+    "ros2 action list -t",
+    "ros2 action send_goal /turtle1/rotate_absolute turtlesim_msgs/action/RotateAbsolute \"{theta: 1.57}\" --feedback",
+    "(cd src/patrol && python3 -m pytest test -v)",
+    "colcon test --packages-select patrol",
+    "colcon test-result --verbose",
+    "python3 .course-kit/v1/tools/check_practice.py PR04 --submission ."
+  ],
+  "tests": [
+    {
+      "name": "test_parameters: 10 -> 5 Гц допустимо, период 0.2 с",
+      "status": "passed"
+    },
+    {
+      "name": "test_parameters: 0, отрицательное, NaN, inf, вне [1, 30] отклоняются",
+      "status": "passed"
+    },
+    {
+      "name": "test_parameters: пределы linear_speed и turn_rate",
+      "status": "passed"
+    },
+    {
+      "name": "test_node_parameters: живая нода отклоняет 0/-1/NaN/31, значение и таймер прежние",
+      "status": "passed"
+    },
+    {
+      "name": "test_node_parameters: 5 Гц пересоздаёт единственный таймер",
+      "status": "passed"
+    },
+    {
+      "name": "test_command (ПР03) и линтеры flake8/pep257/mypy/xmllint",
+      "status": "passed"
+    },
+    {
+      "name": "lint: copyright (сгенерированный пропуск)",
+      "status": "skipped"
+    },
+    {
+      "name": "live: publish_hz 5.0 -> topic hz 5.001; 0/-1/NaN отклонены, hz 9.997",
+      "status": "passed"
+    }
+  ],
+  "defect": {
+    "reproducer": "Проверка publish_hz отключена (continue в on_set-callback). ros2 param set /patrol publish_hz 0.0: клиент ждёт ответа без конца; лог patrol — ZeroDivisionError: division by zero в period_for внутри post_set-callback, [ros2run]: Process exited with failure 1; ros2 node list показывает только /turtlesim, topic hz /turtle1/cmd_vel — 0 сообщений. Тест test_invalid_rate_rejected_state_kept: 4 failed (0 -> ZeroDivisionError, -1 -> RCLError после destroy_timer, NaN -> ValueError, 31 принят).",
+    "root_cause": "Недопустимое значение проходило в применение без проверки: post_set-callback вычислял период 1/publish_hz, и деление на ноль (или отрицательный/NaN период в create_timer) поднимало исключение из обработчика сервиса set_parameters через rclpy.spin — нода падала. Проверка должна стоять до изменения параметра, таймера и активного состояния.",
+    "proof_after": "Проверка возвращена в on_set-callback: ros2 param set publish_hz 0.0 / -1.0 / .nan -> 'Setting parameter failed: ...', param get -> 10.0, topic hz -> 9.997 Гц, нода жива; publish_hz 5.0 -> 'Set parameter successful', topic hz 5.001. Тот же тест test_node_parameters: 7 passed; colcon test-result: 46 tests, 0 errors, 0 failures, 1 skipped."
+  },
+  "claims": {
+    "public_tests_passed": true,
+    "defect_reproduced": true,
+    "defect_fixed": true
+  },
+  "time": {
+    "contact_academic_hours": 2,
+    "self_study_hours": 2
+  },
+  "ai_used": true
+}

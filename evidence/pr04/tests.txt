@@ -1,0 +1,73 @@
+$ colcon build --symlink-install --packages-select patrol
+Starting >>> patrol
+Finished <<< patrol [1.07s]
+
+Summary: 1 package finished [1.20s]
+exit=0
+
+$ (cd src/patrol && python3 -m pytest test -v)
+============================= test session starts ==============================
+platform linux -- Python 3.14.4, pytest-9.0.2, pluggy-1.6.0 -- /usr/bin/python3
+rootdir: /home/ubuntu/ros2_local/src/patrol
+plugins: ament_copyright-0.20.6, ament_pep257-0.20.6, ament_xmllint-0.20.6, ament_lint-0.20.6, ament_mypy-0.20.6, launch_testing-3.9.8, ament_flake8-0.20.6, launch_testing_ros-0.29.9, typeguard-4.4.4, colcon-core-0.21.1, cov-5.0.0
+collecting ... collected 46 items
+
+test/test_command.py::test_no_pose_gives_zero_command PASSED             [  2%]
+test/test_command.py::test_regular_pose_gives_patrol_command PASSED      [  4%]
+test/test_command.py::test_command_does_not_depend_on_position PASSED    [  6%]
+test/test_command.py::test_command_is_clamped PASSED                     [  8%]
+test/test_command.py::test_clamp PASSED                                  [ 10%]
+test/test_copyright.py::test_copyright SKIPPED (No copyright header ...) [ 13%]
+test/test_flake8.py::test_flake8 PASSED                                  [ 15%]
+test/test_mypy.py::test_mypy PASSED                                      [ 17%]
+test/test_node_parameters.py::test_defaults PASSED                       [ 19%]
+test/test_node_parameters.py::test_valid_rate_recreates_single_timer PASSED [ 21%]
+test/test_node_parameters.py::test_invalid_rate_rejected_state_kept[0.0] PASSED [ 23%]
+test/test_node_parameters.py::test_invalid_rate_rejected_state_kept[-1.0] PASSED [ 26%]
+test/test_node_parameters.py::test_invalid_rate_rejected_state_kept[nan] PASSED [ 28%]
+test/test_node_parameters.py::test_invalid_rate_rejected_state_kept[31.0] PASSED [ 30%]
+test/test_node_parameters.py::test_speed_out_of_range_rejected PASSED    [ 32%]
+test/test_parameters.py::test_normal_rate_change_10_to_5 PASSED          [ 34%]
+test/test_parameters.py::test_invalid_rate_rejected[0.0] PASSED          [ 36%]
+test/test_parameters.py::test_invalid_rate_rejected[0] PASSED            [ 39%]
+test/test_parameters.py::test_invalid_rate_rejected[-1.0] PASSED         [ 41%]
+test/test_parameters.py::test_invalid_rate_rejected[-10.0] PASSED        [ 43%]
+test/test_parameters.py::test_invalid_rate_rejected[nan] PASSED          [ 45%]
+test/test_parameters.py::test_invalid_rate_rejected[inf] PASSED          [ 47%]
+test/test_parameters.py::test_invalid_rate_rejected[-inf] PASSED         [ 50%]
+test/test_parameters.py::test_invalid_rate_rejected[0.5] PASSED          [ 52%]
+test/test_parameters.py::test_invalid_rate_rejected[30.5] PASSED         [ 54%]
+test/test_parameters.py::test_invalid_rate_rejected[1000.0] PASSED       [ 56%]
+test/test_parameters.py::test_zero_reason_mentions_range PASSED          [ 58%]
+test/test_parameters.py::test_nan_reason_mentions_finite PASSED          [ 60%]
+test/test_parameters.py::test_rate_bounds_inclusive[1.0] PASSED          [ 63%]
+test/test_parameters.py::test_rate_bounds_inclusive[1] PASSED            [ 65%]
+test/test_parameters.py::test_rate_bounds_inclusive[15.5] PASSED         [ 67%]
+test/test_parameters.py::test_rate_bounds_inclusive[30.0] PASSED         [ 69%]
+test/test_parameters.py::test_non_number_rejected PASSED                 [ 71%]
+test/test_parameters.py::test_speed_and_turn_limits[linear_speed-0.0-True] PASSED [ 73%]
+test/test_parameters.py::test_speed_and_turn_limits[linear_speed-1.0-True] PASSED [ 76%]
+test/test_parameters.py::test_speed_and_turn_limits[linear_speed-0.8-True] PASSED [ 78%]
+test/test_parameters.py::test_speed_and_turn_limits[linear_speed-2.0-False] PASSED [ 80%]
+test/test_parameters.py::test_speed_and_turn_limits[linear_speed--0.1-False] PASSED [ 82%]
+test/test_parameters.py::test_speed_and_turn_limits[linear_speed-nan-False] PASSED [ 84%]
+test/test_parameters.py::test_speed_and_turn_limits[turn_rate--1.0-True] PASSED [ 86%]
+test/test_parameters.py::test_speed_and_turn_limits[turn_rate-0.6-True] PASSED [ 89%]
+test/test_parameters.py::test_speed_and_turn_limits[turn_rate-1.5-False] PASSED [ 91%]
+test/test_parameters.py::test_speed_and_turn_limits[turn_rate-inf-False] PASSED [ 93%]
+test/test_parameters.py::test_unknown_parameter_not_checked PASSED       [ 95%]
+test/test_pep257.py::test_pep257 PASSED                                  [ 97%]
+test/test_xmllint.py::test_xmllint PASSED                                [100%]
+
+======================== 45 passed, 1 skipped in 8.13s =========================
+exit=0
+
+$ colcon test --packages-select patrol
+Starting >>> patrol
+Finished <<< patrol [14.1s]
+
+Summary: 1 package finished [14.2s]
+
+$ colcon test-result --verbose
+Summary: 46 tests, 0 errors, 0 failures, 1 skipped
+exit=0

@@ -6,6 +6,7 @@ build/
 install/
 log/
 bags/
+fixtures/pr07-sensors/
 __pycache__/
 *.pyc
 *.egg-info/

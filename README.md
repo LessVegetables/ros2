@@ -230,3 +230,31 @@ timeout --signal=INT 4 ros2 topic echo /tf_static --once --qos-durability volati
 colcon test --packages-select course_description && colcon test-result --verbose
 python3 .course-kit/v1/tools/check_practice.py PR06 --submission .
 ```
+
+## ПР07. Gazebo и мост ros_gz
+
+Пакет `src/course_simulation`: копии `models/course_ackermann` (камера 20→15 Гц),
+`worlds/mcity-minimal.sdf`, `config/bridge.yaml` (одометрия → `/vehicle/odom_gz`,
+сенсоры с QoS SENSOR_DATA), launch `simulation.launch.py` (Gazebo headless +
+robot_state_publisher + один мост + `drive_adapter` + `odom_adapter`) и
+тестовый источник команды `drive_source`.
+
+Контейнеру нужны `apt-get upgrade` и `ros-lyrical-ackermann-msgs`.
+
+```bash
+colcon build --symlink-install --packages-up-to course_simulation && source install/setup.bash
+export GZ_SIM_RESOURCE_PATH="$PWD/src/course_simulation/models${GZ_SIM_RESOURCE_PATH:+:$GZ_SIM_RESOURCE_PATH}"
+ros2 launch course_simulation simulation.launch.py \
+  world:=$PWD/src/course_simulation/worlds/mcity-minimal.sdf \
+  bridge_config:=$PWD/src/course_simulation/config/bridge.yaml headless:=true
+# второй терминал
+ros2 run course_simulation drive_source --ros-args -p use_sim_time:=true -p speed:=0.6 -p steering_angle:=0.2
+ros2 topic echo /vehicle/gz_cmd_vel --once
+timeout 3s gz topic -e -t /model/course_ackermann/cmd_vel -n 1
+ros2 run tf2_ros tf2_echo odom base_link --ros-args -p use_sim_time:=true
+# запись (вне репозитория — ~350 МиБ)
+timeout --preserve-status --signal=INT --kill-after=60s 40s ros2 bag record --storage mcap --use-sim-time \
+  -o ~/bags/pr07-sensors --topics /vehicle/camera/image_raw /vehicle/scan /vehicle/imu /vehicle/odom /tf /tf_static /clock
+colcon test --packages-select course_simulation && colcon test-result --verbose
+python3 .course-kit/v1/tools/check_practice.py PR07 --submission .
+```

@@ -1,0 +1,18 @@
+$ PYTHONPATH=.course-kit/v1/rl_intro python3 -B -m unittest discover -s labs/pr11/tests -v
+test_first_transition_seed_12 (test_q_learning.EnvTransitionTest.test_first_transition_seed_12) ... ok
+test_limit_truncates_without_termination (test_q_learning.EnvTransitionTest.test_limit_truncates_without_termination) ... ok
+test_epsilon_one_explores_all_actions (test_q_learning.PolicyTest.test_epsilon_one_explores_all_actions) ... ok
+test_epsilon_schedule (test_q_learning.PolicyTest.test_epsilon_schedule) ... ok
+test_epsilon_zero_is_greedy (test_q_learning.PolicyTest.test_epsilon_zero_is_greedy) ... ok
+test_greedy_tie_takes_first_action (test_q_learning.PolicyTest.test_greedy_tie_takes_first_action) ... ok
+test_saved_table_shape_and_finiteness (test_q_learning.TableTest.test_saved_table_shape_and_finiteness) ... ok
+test_training_is_deterministic (test_q_learning.TableTest.test_training_is_deterministic) ... ok
+test_terminal_and_truncated_differ (test_q_learning.UpdateTest.test_terminal_and_truncated_differ) ... ok
+test_terminated_ignores_next_state (test_q_learning.UpdateTest.test_terminated_ignores_next_state) ... ok
+test_truncated_bootstraps_from_next_state (test_q_learning.UpdateTest.test_truncated_bootstraps_from_next_state) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.007s
+
+OK
+exit=0

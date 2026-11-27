@@ -114,3 +114,12 @@
 |--------|--------------------|-----------|-----------------|---------------|
 | Claude Opus 5.5 (`claude-opus-5-5`) | Claude Code (desktop app) | `src/robotics_course_interfaces`, `src/scene_adapter` (core, convert, node, check_fixtures, тесты), `config/vlm.yaml`; копии `contracts/`, `fixtures/vlm/` из kit v1-w12 | проверка по JSON Schema, канонический unknown, ключ кэша с внедряемым backend, преобразование JSON↔ROS | `colcon test`: 61 тест (60 passed, 1 skipped); дефектный ключ — 3 failed |
 | Claude Opus 5.5 (`claude-opus-5-5`) | Claude Code (desktop app), `docker exec` в контейнер `ros2` | `evidence/pr10/*` | **запустил сам** проверку fixtures, ROS-демо на sim time и дефект | выводы — реальные результаты прогона; API и веса не использовались |
+
+## PR11
+
+- Использован ИИ: да (`ai_used: true` в отчёте этой ПР).
+
+| Модель | Инструмент / среда | Компонент | Характер помощи | Как проверено |
+|--------|--------------------|-----------|-----------------|---------------|
+| Claude Opus 5.5 (`claude-opus-5-5`) | Claude Code (desktop app) | `labs/pr11/train.py`, `labs/pr11/tests/test_q_learning.py`, шаг CI | ε-жадный выбор, обновление Q по переходу с разной целью для terminated/truncated, сохранение таблицы, тесты | 11 тестов OK; `evaluate.py` курса: 10/10 финишей; таблица воспроизводится побайтно при повторном обучении |
+| Claude Opus 5.5 (`claude-opus-5-5`) | Claude Code (desktop app) | `evidence/pr11/*` | запустил обучение и оценку, написал разбор пары трасс | числа в `interpretation.md` взяты из `evaluation.json` |

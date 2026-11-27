@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "practice_id": "PR11",
+  "commit": "88eff9ac95d5aadeefe09c2083133ee2892e43f7",
+  "course_kit": {
+    "version": "v1-w12",
+    "archive_sha256": "525e86f818ffed166e7f7b67cc87fdd3f3ea840d13aa90e76bde9fda0f3c9c5a"
+  },
+  "commands": [
+    "PYTHONPATH=.course-kit/v1/rl_intro python3 -B -m unittest discover -s labs/pr11/tests -v",
+    "PYTHONPATH=.course-kit/v1/rl_intro python3 -B labs/pr11/train.py --output evidence/pr11/q-table.json",
+    "python3 -B .course-kit/v1/rl_intro/evaluate.py --policy evidence/pr11/q-table.json --output evidence/pr11/evaluation.json",
+    "python3 .course-kit/v1/tools/check_practice.py PR11 --submission ."
+  ],
+  "tests": [
+    {
+      "name": "UpdateTest: terminated -> 1.20, truncated -> 1.96",
+      "status": "passed"
+    },
+    {
+      "name": "EnvTransitionTest: первый переход seed=12, лимит 14 шагов -> truncated",
+      "status": "passed"
+    },
+    {
+      "name": "PolicyTest: тай-брейк, расписание epsilon, epsilon=0/1",
+      "status": "passed"
+    },
+    {
+      "name": "TableTest: форма 8x7x4, конечные значения, детерминизм",
+      "status": "passed"
+    },
+    {
+      "name": "evaluate.py: Q-политика 10/10 финишей на 10 отложенных seed (straight 6/10)",
+      "status": "passed"
+    }
+  ],
+  "claims": {
+    "public_tests_passed": true,
+    "multiple_seeds": true
+  },
+  "time": {
+    "contact_academic_hours": 2,
+    "self_study_hours": 2.5
+  },
+  "ai_used": true
+}

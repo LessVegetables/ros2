@@ -1,0 +1,6 @@
+$ PYTHONPATH=.course-kit/v1/rl_intro python3 -B labs/pr11/train.py --output evidence/pr11/q-table.json
+Q-таблица 8×7×4 после 2000 эпизодов сохранена в evidence/pr11/q-table.json
+$ python3 -B .course-kit/v1/rl_intro/evaluate.py --policy evidence/pr11/q-table.json --output evidence/pr11/evaluation.json
+straight: финиши 6/10, сходы 4, лимит 0, return 7.04 ± 9.16
+q_learning: финиши 10/10, сходы 0, лимит 0, return 15.18 ± 0.29
+exit=0

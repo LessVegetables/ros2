@@ -62,3 +62,15 @@
 
 Команды ROS 2 для evidence этой ПР запускал ИИ-агент в моём контейнере;
 выводы не редактировались.
+
+## PR06
+
+- Использован ИИ: да (`ai_used: true` в отчёте этой ПР).
+
+| Модель | Инструмент / среда | Компонент | Характер помощи | Как проверено |
+|--------|--------------------|-----------|-----------------|---------------|
+| Claude Opus 5.5 (`claude-opus-5-5`) | Claude Code (desktop app) | `src/course_description` (`urdf/vehicle.urdf.xacro`, `launch/display.launch.py`, `rviz/vehicle.rviz`, `test/test_description.py`) | Xacro-модель по размерам SDF из course kit, макросы инерции, launch robot_state_publisher + RViz, структурные тесты; дефектный вариант parent лидара | `check_urdf`, `colcon test`: 70 тестов, 0 ошибок; тест parent падает на дефекте (2 failed) |
+| Claude Opus 5.5 (`claude-opus-5-5`) | Claude Code (desktop app), `docker exec` в контейнер `ros2` | `evidence/pr06/*`, скриншоты RViz и графы `view_frames` в `lab6/` | **запустил опыт сам**: QoS /tf_static, tf2_echo, view_frames, дефект и исправление; оформил таблицу frames | выводы — реальные результаты этого прогона; RViz осмотрен по скриншотам `lab6/` |
+
+Команды ROS 2 для evidence этой ПР запускал ИИ-агент в моём контейнере;
+выводы не редактировались, только сокращены повторяющиеся строки.

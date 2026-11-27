@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "practice_id": "PR06",
+  "commit": "86b5be4e6d669dd72532dcddef5aea0967fc9f15",
+  "course_kit": {
+    "version": "v1-w12",
+    "archive_sha256": "525e86f818ffed166e7f7b67cc87fdd3f3ea840d13aa90e76bde9fda0f3c9c5a"
+  },
+  "commands": [
+    "colcon build --symlink-install --packages-select course_description",
+    "xacro src/course_description/urdf/vehicle.urdf.xacro > /tmp/vehicle.urdf",
+    "check_urdf /tmp/vehicle.urdf",
+    "ros2 launch course_description display.launch.py rviz:=true",
+    "ros2 topic info /tf_static --verbose",
+    "timeout --signal=INT 4 ros2 topic echo /tf_static --once --qos-durability transient_local --qos-reliability reliable",
+    "timeout --signal=INT 4 ros2 topic echo /tf_static --once --qos-durability volatile --qos-reliability reliable",
+    "ros2 run tf2_ros tf2_echo base_link lidar_link",
+    "ros2 run tf2_tools view_frames",
+    "ros2 launch course_description display.launch.py rviz:=true zero_joints:=true",
+    "colcon test --packages-select course_description",
+    "colcon test-result --verbose",
+    "python3 .course-kit/v1/tools/check_practice.py PR06 --submission ."
+  ],
+  "tests": [
+    {
+      "name": "test_description: одно корневое звено base_link, дерево связно и ациклично",
+      "status": "passed"
+    },
+    {
+      "name": "test_description: parent camera/lidar/imu = base_link",
+      "status": "passed"
+    },
+    {
+      "name": "test_description: lidar_joint fixed, base_link, (0.28, 0, 0.38)",
+      "status": "passed"
+    },
+    {
+      "name": "test_description: положения колёс из wheelbase/track, оси continuous",
+      "status": "passed"
+    },
+    {
+      "name": "test_description: visual и collision заданы",
+      "status": "passed"
+    },
+    {
+      "name": "test_description: массы и тензоры инерции допустимы",
+      "status": "passed"
+    },
+    {
+      "name": "test_description: check_urdf принимает модель",
+      "status": "passed"
+    },
+    {
+      "name": "lint: flake8, pep257, xmllint",
+      "status": "passed"
+    },
+    {
+      "name": "lint: copyright (сгенерированный пропуск)",
+      "status": "skipped"
+    },
+    {
+      "name": "live: /tf_static RELIABLE+TRANSIENT_LOCAL; поздний transient_local exit=0, volatile exit=124",
+      "status": "passed"
+    }
+  ],
+  "defect": {
+    "reproducer": "lidar_joint получил parent camera_link при прежнем offset (0.28, 0, 0.38): check_urdf проходит (у camera_link 2 ребёнка), но tf2_echo base_link lidar_link даёт (0.560, 0, 0.760), view_frames показывает ребро camera_link -> lidar_link, в RViz лидар висит над передком; test_description.py: 2 failed (assert 'camera_link' == 'base_link').",
+    "root_cause": "Origin fixed-joint задаётся относительно родительского звена. Смена parent на camera_link сложила смещение камеры и лидара. Дерево осталось связным и ацикличным, поэтому структурная проверка check_urdf ошибку не видит; её обнаруживает только тест ожидаемого parent/положения.",
+    "proof_after": "parent возвращён на base_link: tf2_echo base_link lidar_link -> (0.280, 0, 0.380), view_frames: base_link -> lidar_link, test_description.py: 9 passed; colcon test-result: 70 tests, 0 errors, 0 failures, 3 skipped."
+  },
+  "claims": {
+    "public_tests_passed": true,
+    "defect_reproduced": true,
+    "defect_fixed": true
+  },
+  "time": {
+    "contact_academic_hours": 2,
+    "self_study_hours": 2
+  },
+  "ai_used": true
+}

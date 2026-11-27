@@ -1,0 +1,108 @@
+$ xacro src/course_description/urdf/vehicle.urdf.xacro > /tmp/vehicle.urdf
+exit=0
+
+$ check_urdf /tmp/vehicle.urdf
+exit=0
+robot name is: course_ackermann
+---------- Successfully Parsed XML ---------------
+root Link: base_link has 7 child(ren)
+    child(1):  camera_link
+        child(1):  camera_optical_frame
+    child(2):  front_left_knuckle
+        child(1):  front_left_wheel
+    child(3):  front_right_knuckle
+        child(1):  front_right_wheel
+    child(4):  imu_link
+    child(5):  lidar_link
+    child(6):  rear_left_wheel
+    child(7):  rear_right_wheel
+
+$ ros2 node list --no-daemon --spin-time 2
+/robot_state_publisher
+/rviz2
+/transform_listener_impl_aaab2c667e20
+
+$ ros2 topic list --no-daemon --spin-time 2
+/joint_states
+/parameter_events
+/robot_description
+/rosout
+/tf
+/tf_static
+
+$ ros2 run tf2_ros tf2_echo base_link lidar_link   (≈3 с, затем Ctrl+C)
+[INFO] [1795731570.073912128] [tf2_echo]: Waiting for transform base_link ->  lidar_link: Invalid frame ID "base_link" passed to canTransform argument target_frame - frame does not exist
+At time 0.0
+- Translation: [0.280, 0.000, 0.380]
+- Rotation: in Quaternion (xyzw) [0.000, 0.000, 0.000, 1.000]
+- Rotation: in RPY (radian) [0.000, -0.000, 0.000]
+- Rotation: in RPY (degree) [0.000, -0.000, 0.000]
+- Matrix:
+  1.000  0.000  0.000  0.280
+  0.000  1.000  0.000  0.000
+  0.000  0.000  1.000  0.380
+  0.000  0.000  0.000  1.000
+[ros2run]: Received signal:  Interrupt
+
+$ ros2 run tf2_ros tf2_echo base_link camera_link   (≈3 с, затем Ctrl+C)
+[INFO] [1795731573.229197713] [tf2_echo]: Waiting for transform base_link ->  camera_link: Invalid frame ID "base_link" passed to canTransform argument target_frame - frame does not exist
+At time 0.0
+- Translation: [0.280, 0.000, 0.380]
+- Rotation: in Quaternion (xyzw) [0.000, 0.000, 0.000, 1.000]
+- Rotation: in RPY (radian) [0.000, -0.000, 0.000]
+- Rotation: in RPY (degree) [0.000, -0.000, 0.000]
+- Matrix:
+  1.000  0.000  0.000  0.280
+  0.000  1.000  0.000  0.000
+  0.000  0.000  1.000  0.380
+  0.000  0.000  0.000  1.000
+At time 0.0
+
+$ ros2 run tf2_ros tf2_echo base_link imu_link   (≈3 с, затем Ctrl+C)
+[INFO] [1795731576.833049298] [tf2_echo]: Waiting for transform base_link ->  imu_link: Invalid frame ID "base_link" passed to canTransform argument target_frame - frame does not exist
+At time 0.0
+- Translation: [0.280, 0.000, 0.380]
+- Rotation: in Quaternion (xyzw) [0.000, 0.000, 0.000, 1.000]
+- Rotation: in RPY (radian) [0.000, -0.000, 0.000]
+- Rotation: in RPY (degree) [0.000, -0.000, 0.000]
+- Matrix:
+  1.000  0.000  0.000  0.280
+  0.000  1.000  0.000  0.000
+  0.000  0.000  1.000  0.380
+  0.000  0.000  0.000  1.000
+At time 0.0
+
+$ ros2 run tf2_ros tf2_echo base_link camera_optical_frame   (≈3 с, затем Ctrl+C)
+[INFO] [1795731579.895501758] [tf2_echo]: Waiting for transform base_link ->  camera_optical_frame: Invalid frame ID "base_link" passed to canTransform argument target_frame - frame does not exist
+At time 0.0
+- Translation: [0.280, 0.000, 0.380]
+- Rotation: in Quaternion (xyzw) [0.500, -0.500, 0.500, -0.500]
+- Rotation: in RPY (radian) [-1.571, -0.000, -1.571]
+- Rotation: in RPY (degree) [-90.000, -0.000, -90.000]
+- Matrix:
+  0.000  0.000  1.000  0.280
+ -1.000  0.000  0.000  0.000
+  0.000 -1.000  0.000  0.380
+  0.000  0.000  0.000  1.000
+At time 0.0
+
+$ ros2 run tf2_ros tf2_echo base_link front_left_wheel   (≈3 с, затем Ctrl+C)
+[INFO] [1795731582.998247176] [tf2_echo]: Waiting for transform base_link ->  front_left_wheel: Invalid frame ID "base_link" passed to canTransform argument target_frame - frame does not exist
+[INFO] [1795731584.985960427] [tf2_echo]: Waiting for transform base_link ->  front_left_wheel: Invalid frame ID "front_left_wheel" passed to canTransform argument source_frame - frame does not exist
+[ros2run]: Received signal:  Interrupt
+[INFO] [1795731585.765938094] [rclcpp]: signal_handler(signum=2)
+[INFO] [1795731585.768485094] [rclcpp]: signal_handler(signum=2)
+
+$ (cd /tmp && ros2 run tf2_tools view_frames)
+[INFO] [1795731592.198370805] [view_frames]: Generating graph...
+[INFO] [1795731592.202123264] [view_frames]: Result:tf2_msgs.srv.FrameGraph_Response(frame_yaml="camera_link: \n  parent: 'base_link'\n  broadcaster: 'default_authority'\n  rate: 10000.000\n  most_recent_transform: 0.000000\n  oldest_transform: 0.000000\n  buffer_length: 0.000\ncamera_optical_frame: \n  parent: 'camera_link'\n  broadcaster: 'default_authority'\n  rate: 10000.000\n  most_recent_transform: 0.000000\n  oldest_transform: 0.000000\n  buffer_length: 0.000\nimu_link: \n  parent: 'base_link'\n  broadcaster: 'default_authority'\n  rate: 10000.000\n  most_recent_transform: 0.000000\n  oldest_transform: 0.000000\n  buffer_length: 0.000\nlidar_link: \n  parent: 'base_link'\n  broadcaster: 'default_authority'\n  rate: 10000.000\n  most_recent_transform: 0.000000\n  oldest_transform: 0.000000\n  buffer_length: 0.000\n")
+[INFO] [1795731592.204669472] [view_frames]: Exporting graph in frames_2026-11-26_22.19.52.pdf file...
+/tmp/frames_2026-11-26_22.19.52.gv
+/tmp/frames_2026-11-26_22.19.52.pdf
+
+$ grep -- "->" /tmp/frames_*.gv   (рёбра дерева из view_frames)
+"base_link" -> "camera_link"
+"camera_link" -> "camera_optical_frame"
+"base_link" -> "imu_link"
+"base_link" -> "lidar_link"
+}->"base_link";

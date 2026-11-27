@@ -1,0 +1,150 @@
+## topic info /tf_static
+Type: tf2_msgs/msg/TFMessage
+Publisher count: 1
+Node name: robot_state_publisher
+Node namespace: /
+Topic type: tf2_msgs/msg/TFMessage
+Topic type hash: RIHS01_e369d0f05a23ae52508854b66f6aa0437f3449d652e8cbf22d5abe85d020f087
+Endpoint type: PUBLISHER
+GID: 01.0f.eb.7d.35.28.7f.30.00.00.00.00.00.00.16.03
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: TRANSIENT_LOCAL
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+Subscription count: 1
+Node name: transform_listener_impl_aaab2c667e20
+Node namespace: /
+Topic type: tf2_msgs/msg/TFMessage
+Topic type hash: RIHS01_e369d0f05a23ae52508854b66f6aa0437f3449d652e8cbf22d5abe85d020f087
+Endpoint type: SUBSCRIPTION
+GID: 01.0f.eb.7d.36.28.41.62.00.00.00.00.00.00.17.04
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (100)
+  Durability: TRANSIENT_LOCAL
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+## echo transient_local
+transforms:
+- header:
+    stamp:
+      sec: 1795731540
+      nanosec: 396355670
+    frame_id: base_link
+  child_frame_id: camera_link
+  transform:
+    translation:
+      x: 0.28
+      y: 0.0
+      z: 0.38
+    rotation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1795731540
+      nanosec: 396355670
+    frame_id: camera_link
+  child_frame_id: camera_optical_frame
+  transform:
+    translation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+    rotation:
+      x: 0.5
+      y: -0.4999999999999999
+      z: 0.5
+      w: -0.5000000000000001
+- header:
+    stamp:
+      sec: 1795731540
+      nanosec: 396355670
+    frame_id: base_link
+  child_frame_id: imu_link
+  transform:
+    translation:
+      x: 0.28
+      y: 0.0
+      z: 0.38
+    rotation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1795731540
+      nanosec: 396355670
+    frame_id: base_link
+  child_frame_id: lidar_link
+  transform:
+    translation:
+      x: 0.28
+      y: 0.0
+      z: 0.38
+    rotation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+---
+exit=0
+## echo volatile
+exit=124
+## topic info /tf
+Type: tf2_msgs/msg/TFMessage
+Publisher count: 1
+Node name: robot_state_publisher
+Node namespace: /
+Topic type: tf2_msgs/msg/TFMessage
+Topic type hash: RIHS01_e369d0f05a23ae52508854b66f6aa0437f3449d652e8cbf22d5abe85d020f087
+Endpoint type: PUBLISHER
+GID: 01.0f.eb.7d.35.28.7f.30.00.00.00.00.00.00.15.03
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (100)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+Subscription count: 1
+Node name: transform_listener_impl_aaab2c667e20
+Node namespace: /
+Topic type: tf2_msgs/msg/TFMessage
+Topic type hash: RIHS01_e369d0f05a23ae52508854b66f6aa0437f3449d652e8cbf22d5abe85d020f087
+Endpoint type: SUBSCRIPTION
+GID: 01.0f.eb.7d.36.28.41.62.00.00.00.00.00.00.16.04
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (100)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+## Вывод
+Команды выполнены, пока работал `ros2 launch course_description display.launch.py`
+(единственный издатель /tf_static — robot_state_publisher). `timeout --signal=INT`
+вместо `timeout 4`: в Lyrical `ros2 topic echo` не завершается по SIGTERM, а exit=124
+сохраняется и при SIGINT.
+
+У издателя /tf_static профиль RELIABLE + TRANSIENT_LOCAL, KEEP_LAST(1): последнее
+сообщение хранится у издателя и отдаётся каждому новому совместимому подписчику.
+Поэтому поздний подписчик с transient_local получил все фиксированные
+преобразования сразу (exit=0), а подписчик с volatile — ничего (exit=124):
+robot_state_publisher публикует статику один раз при старте, и после подключения
+нового сообщения не было. /tf, наоборот, VOLATILE: там меняющиеся во времени связи
+(колёса, позже odom→base_link), их публикуют постоянно, и старые значения позднему
+подписчику не нужны — он дождётся свежих. Фиксированные связи не меняются,
+поэтому их выгоднее один раз сохранить (latched), чем повторять.

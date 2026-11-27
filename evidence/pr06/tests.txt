@@ -1,0 +1,31 @@
+$ colcon build --symlink-install --packages-select course_description
+Starting >>> course_description
+Finished <<< course_description [1.07s]
+
+Summary: 1 package finished [1.20s]
+exit=0
+
+$ colcon test --packages-select course_description --event-handlers console_direct+
+Starting >>> course_description
+============================= test session starts ==============================
+platform linux -- Python 3.14.4, pytest-9.0.2, pluggy-1.6.0
+cachedir: /home/ubuntu/ros2_local/build/course_description/.pytest_cache
+rootdir: /home/ubuntu/ros2_local/src/course_description
+plugins: ament_copyright-0.20.6, ament_pep257-0.20.6, ament_xmllint-0.20.6, ament_lint-0.20.6, ament_mypy-0.20.6, launch_testing-3.9.8, ament_flake8-0.20.6, launch_testing_ros-0.29.9, typeguard-4.4.4, colcon-core-0.21.1, cov-5.0.0
+collected 13 items
+
+test/test_copyright.py s                                                 [  7%]
+test/test_description.py .........                                       [ 76%]
+test/test_flake8.py .                                                    [ 84%]
+test/test_pep257.py .                                                    [ 92%]
+test/test_xmllint.py .                                                   [100%]
+
+- generated xml file: /home/ubuntu/ros2_local/build/course_description/pytest.xml -
+======================== 12 passed, 1 skipped in 1.02s =========================
+Finished <<< course_description [1.54s]
+
+Summary: 1 package finished [1.66s]
+
+$ colcon test-result --verbose
+Summary: 70 tests, 0 errors, 0 failures, 3 skipped
+exit=0

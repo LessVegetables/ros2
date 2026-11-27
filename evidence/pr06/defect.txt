@@ -1,0 +1,57 @@
+# ДЕФЕКТ: lidar_link подвешен к camera_link (offset прежний 0.28 0 0.38)
+
+$ xacro src/course_description/urdf/vehicle.urdf.xacro > /tmp/vehicle-defect.urdf && check_urdf /tmp/vehicle-defect.urdf
+exit=0
+robot name is: course_ackermann
+---------- Successfully Parsed XML ---------------
+root Link: base_link has 6 child(ren)
+    child(1):  camera_link
+        child(1):  camera_optical_frame
+        child(2):  lidar_link
+    child(2):  front_left_knuckle
+        child(1):  front_left_wheel
+    child(3):  front_right_knuckle
+        child(1):  front_right_wheel
+    child(4):  imu_link
+    child(5):  rear_left_wheel
+    child(6):  rear_right_wheel
+
+$ ros2 run tf2_ros tf2_echo base_link lidar_link   (≈3 с)
+- Translation: [0.560, 0.000, 0.760]
+- Rotation: in RPY (degree) [0.000, -0.000, 0.000]
+
+$ ros2 run tf2_ros tf2_echo camera_link lidar_link   (≈3 с)
+- Translation: [0.280, 0.000, 0.380]
+
+$ (cd /tmp && ros2 run tf2_tools view_frames)  — рёбра
+"base_link" -> "camera_link"
+"camera_link" -> "camera_optical_frame"
+"base_link" -> "imu_link"
+"camera_link" -> "lidar_link"
+"base_link" -> "front_left_knuckle"
+"front_left_knuckle" -> "front_left_wheel"
+"base_link" -> "front_right_knuckle"
+"front_right_knuckle" -> "front_right_wheel"
+"base_link" -> "rear_left_wheel"
+"base_link" -> "rear_right_wheel"
+}->"base_link";
+
+$ python3 -m pytest -q src/course_description/test/test_description.py
+exit=1
+E   AssertionError: assert 'camera_link' == 'base_link'
+/home/ubuntu/ros2_local/src/course_description/test/test_description.py:57: AssertionError: assert 'camera_link' == 'base_link'
+E   AssertionError: assert 'camera_link' == 'base_link'
+/home/ubuntu/ros2_local/src/course_description/test/test_description.py:63: AssertionError: assert 'camera_link' == 'base_link'
+FAILED test/test_description.py::test_sensor_parent_is_base_link[lidar_link]
+FAILED test/test_description.py::test_lidar_expected_parent_and_offset - Asse...
+2 failed, 7 passed in 0.13s
+
+# ИСПРАВЛЕНО: lidar_link снова дочерний base_link
+
+$ ros2 run tf2_ros tf2_echo base_link lidar_link   (≈3 с)
+- Translation: [0.280, 0.000, 0.380]
+- Rotation: in RPY (degree) [0.000, -0.000, 0.000]
+
+$ python3 -m pytest -q src/course_description/test/test_description.py
+exit=0
+9 passed in 0.09s

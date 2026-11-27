@@ -1,0 +1,16 @@
+# ДЕФЕКТ: prompt_sha256 исключён из ключа (labs/pr10/defect.patch)
+$ (cd src/scene_adapter && python3 -m pytest test/test_core.py -q --tb=line)
+E   AssertionError: assert '7afa5eb54362...e7d67fd98636c' == '880a8c280941...8e8895cc645de'
+/home/ubuntu/ros2_local/src/scene_adapter/test/test_core.py:88: AssertionError: assert '7afa5eb54362...e7d67fd98636c' == '880a8c280941...8e8895cc645de'
+E   AssertionError: assert '7afa5eb54362fc9900409dcc8ec91457c7e2baa855faed5bbb0e7d67fd98636c' != '7afa5eb54362fc9900409dcc8ec91457c7e2baa855faed5bbb0e7d67fd98636c'
+/home/ubuntu/ros2_local/src/scene_adapter/test/test_core.py:99: AssertionError: assert '7afa5eb54362fc9900409dcc8ec91457c7e2baa855faed5bbb0e7d67fd98636c' != '7afa5eb54362fc9900409dcc8ec91457c7e2baa855faed5bbb0e7d67fd98636c'
+E   assert (True is False)
+/home/ubuntu/ros2_local/src/scene_adapter/test/test_core.py:147: assert (True is False)
+FAILED test/test_core.py::test_key_is_sha256_of_sorted_compact_json - Asserti...
+FAILED test/test_core.py::test_each_component_changes_key[prompt_sha256-dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd]
+FAILED test/test_core.py::test_every_component_misses[prompt] - assert (True ...
+3 failed, 19 passed in 0.16s
+
+# ИСПРАВЛЕНО: полный ключ
+$ (cd src/scene_adapter && python3 -m pytest test/test_core.py -q)
+22 passed in 0.08s

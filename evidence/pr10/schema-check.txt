@@ -1,0 +1,7 @@
+$ ros2 run scene_adapter check_fixtures
+abstain_threshold=0.5 max_age_s=0.25
+scene-clear.json: now_s=0.1 raw_schema=ok -> status=valid reason='' output_schema_ok=True OK
+scene-low-confidence.json: now_s=0.1 raw_schema=ok -> status=unknown reason='low_confidence' output_schema_ok=True OK
+scene-stale.json: now_s=2.0 raw_schema=ok -> status=unknown reason='stale_input' output_schema_ok=True OK
+scene-extra-command.json: now_s=0.1 raw_schema=["Additional properties are not allowed ('drive' was unexpected)"] -> status=unknown reason='invalid_schema' output_schema_ok=True OK
+exit=0

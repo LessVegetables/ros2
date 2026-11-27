@@ -105,3 +105,12 @@
 |--------|--------------------|-----------|-----------------|---------------|
 | Claude Opus 5.5 (`claude-opus-5-5`) | Claude Code (desktop app) | `src/perception_baseline` (core, node, fixture_io, publish_pair, тесты, README), `data/manifest.json` | ROS-обёртка того же baseline, 2D/3D/диагностика, ROS-тесты по топикам; исправление списков разбиения | `colcon test`: 20 тестов (19 passed); evaluator курса — exit 0 |
 | Claude Opus 5.5 (`claude-opus-5-5`) | Claude Code (desktop app), `docker exec` в контейнер `ros2` | `evidence/pr09/*` | **запустил сам** evaluator до/после, ROS-демо пяти случаев; написал разбор ошибок по отчётам | числа в errors.md взяты из `metrics-before.json` / `metrics.json` |
+
+## PR10
+
+- Использован ИИ: да (`ai_used: true` в отчёте этой ПР).
+
+| Модель | Инструмент / среда | Компонент | Характер помощи | Как проверено |
+|--------|--------------------|-----------|-----------------|---------------|
+| Claude Opus 5.5 (`claude-opus-5-5`) | Claude Code (desktop app) | `src/robotics_course_interfaces`, `src/scene_adapter` (core, convert, node, check_fixtures, тесты), `config/vlm.yaml`; копии `contracts/`, `fixtures/vlm/` из kit v1-w12 | проверка по JSON Schema, канонический unknown, ключ кэша с внедряемым backend, преобразование JSON↔ROS | `colcon test`: 61 тест (60 passed, 1 skipped); дефектный ключ — 3 failed |
+| Claude Opus 5.5 (`claude-opus-5-5`) | Claude Code (desktop app), `docker exec` в контейнер `ros2` | `evidence/pr10/*` | **запустил сам** проверку fixtures, ROS-демо на sim time и дефект | выводы — реальные результаты прогона; API и веса не использовались |

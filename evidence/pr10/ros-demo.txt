@@ -1,0 +1,100 @@
+
+$ ros2 interface show robotics_course_interfaces/msg/SceneDescription
+# SceneDescription v1: perception observation, never an actuator command.
+std_msgs/Header header
+	builtin_interfaces/Time stamp
+		int32 sec
+		uint32 nanosec
+	string frame_id
+uint8 version
+uint8 STATUS_VALID=0
+uint8 STATUS_UNKNOWN=1
+uint8 status
+string status_reason
+uint8 LIGHT_NONE=0
+uint8 LIGHT_RED=1
+uint8 LIGHT_YELLOW=2
+uint8 LIGHT_GREEN=3
+uint8 LIGHT_UNKNOWN=255
+uint8 traffic_light
+uint8 SIGN_NONE=0
+uint8 SIGN_LEFT=1
+uint8 SIGN_RIGHT=2
+uint8 SIGN_STRAIGHT=3
+uint8 SIGN_UNKNOWN=255
+uint8 direction_sign
+float32 lane_offset_m
+bool has_stop_line
+float32 stop_line_distance_m
+bool has_turn
+float32 turn_distance_m
+bool has_obstacle
+float32 obstacle_distance_m
+float32 confidence
+string source
+
+## fixture=scene-clear.json, /clock=0.1 с (use_sim_time)
+
+$ ros2 topic pub -r 20 /clock rosgraph_msgs/msg/Clock "{clock: {sec: 0, nanosec: ...}}"
+
+$ ros2 run scene_adapter scene_adapter --ros-args --params-file config/vlm.yaml -p use_sim_time:=true -p fixture_path:=fixtures/vlm/scene-clear.json
+
+$ ros2 topic echo /perception/scene --once
+header:
+  stamp:
+    sec: 0
+    nanosec: 0
+  frame_id: base_link
+version: 1
+status: 0
+status_reason: ''
+traffic_light: 3
+direction_sign: 3
+lane_offset_m: 0.03999999910593033
+has_stop_line: true
+stop_line_distance_m: 2.4000000953674316
+has_turn: true
+turn_distance_m: 4.199999809265137
+has_obstacle: false
+obstacle_distance_m: 0.0
+confidence: 0.9100000262260437
+source: mock
+---
+scene: valid '' source=mock now_s=0.100 stamp_s=0.0
+scene: valid '' source=mock now_s=0.100 stamp_s=0.0
+
+## fixture=scene-stale.json, /clock=2.0 с (use_sim_time)
+
+$ ros2 topic pub -r 20 /clock rosgraph_msgs/msg/Clock "{clock: {sec: 2, nanosec: ...}}"
+
+$ ros2 run scene_adapter scene_adapter --ros-args --params-file config/vlm.yaml -p use_sim_time:=true -p fixture_path:=fixtures/vlm/scene-stale.json
+
+$ ros2 topic echo /perception/scene --once
+header:
+  stamp:
+    sec: 1
+    nanosec: 0
+  frame_id: base_link
+version: 1
+status: 1
+status_reason: stale_input
+traffic_light: 255
+direction_sign: 255
+lane_offset_m: 0.0
+has_stop_line: false
+stop_line_distance_m: 0.0
+has_turn: false
+turn_distance_m: 0.0
+has_obstacle: false
+obstacle_distance_m: 0.0
+confidence: 0.0
+source: mock
+---
+scene: unknown 'stale_input' source=mock now_s=2.000 stamp_s=1.0
+scene: unknown 'stale_input' source=mock now_s=2.000 stamp_s=1.0
+
+## mode=live без backend
+
+$ ros2 run scene_adapter scene_adapter --ros-args --params-file config/vlm.yaml -p mode:=live
+        'mode=live требует явно внедрённого backend; скрытый сетевой вызов запрещён')
+RuntimeError: mode=live требует явно внедрённого backend; скрытый сетевой вызов запрещён

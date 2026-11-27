@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "practice_id": "PR10",
+  "commit": "fcd7b5139f47fdc7293db99d57eb50301b98213b",
+  "course_kit": {
+    "version": "v1-w12",
+    "archive_sha256": "525e86f818ffed166e7f7b67cc87fdd3f3ea840d13aa90e76bde9fda0f3c9c5a"
+  },
+  "commands": [
+    "colcon build --symlink-install --packages-up-to scene_adapter",
+    "colcon test --packages-select scene_adapter --event-handlers console_direct+",
+    "colcon test-result --verbose",
+    "ros2 run scene_adapter check_fixtures",
+    "ros2 interface show robotics_course_interfaces/msg/SceneDescription",
+    "ros2 topic pub -r 20 /clock rosgraph_msgs/msg/Clock \"{clock: {sec: 0, nanosec: 100000000}}\"",
+    "ros2 run scene_adapter scene_adapter --ros-args --params-file config/vlm.yaml -p use_sim_time:=true",
+    "ros2 topic echo /perception/scene --once",
+    "python3 .course-kit/v1/tools/check_practice.py PR10 --submission ."
+  ],
+  "tests": [
+    {
+      "name": "test_core: четыре fixture -> valid / low_confidence / stale_input / invalid_schema",
+      "status": "passed"
+    },
+    {
+      "name": "test_core: канонический unknown, drive отклонён, граница возраста",
+      "status": "passed"
+    },
+    {
+      "name": "test_core: ключ = SHA-256 сортированного компактного JSON; каждый компонент меняет ключ",
+      "status": "passed"
+    },
+    {
+      "name": "test_core: промах вызывает backend, попадание — нет; возраст при попадании проверяется",
+      "status": "passed"
+    },
+    {
+      "name": "test_convert: round-trip JSON->ROS->JSON для null, всех enum и stamp",
+      "status": "passed"
+    },
+    {
+      "name": "lint: flake8, pep257, xmllint",
+      "status": "passed"
+    },
+    {
+      "name": "lint: copyright (сгенерированный пропуск)",
+      "status": "skipped"
+    }
+  ],
+  "defect": {
+    "reproducer": "Из key_payload удалён prompt_sha256 (labs/pr10/defect.patch): test_each_component_changes_key[prompt_sha256] — одинаковые ключи 7afa5eb5... для разных промптов; test_every_component_misses[prompt] — после смены файла промпта hit=True, backend не вызван, возвращена старая сцена; 3 failed, 19 passed.",
+    "root_cause": "Ключ кэша должен покрывать все входы, от которых зависит ответ VLM. Без prompt_sha256 разные промпты для одного изображения, модели и конфигурации дают один ключ — кэш возвращает ответ на другой запрос как актуальный.",
+    "proof_after": "Полный ключ (image_sha256, prompt_sha256, model_id, generation_config, schema_version): test_core 22 passed; colcon test scene_adapter — 61 тест, 0 ошибок; изменение каждого компонента даёт cache miss и новый вызов backend."
+  },
+  "claims": {
+    "public_tests_passed": true,
+    "defect_reproduced": true,
+    "defect_fixed": true,
+    "offline_verified": true
+  },
+  "time": {
+    "contact_academic_hours": 2,
+    "self_study_hours": 2.5
+  },
+  "ai_used": true
+}

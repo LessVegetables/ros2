@@ -1,0 +1,34 @@
+$ colcon build --symlink-install --packages-up-to scene_adapter
+Starting >>> robotics_course_interfaces
+Finished <<< robotics_course_interfaces [1.00s]
+Starting >>> scene_adapter
+Finished <<< scene_adapter [1.25s]
+
+Summary: 2 packages finished [2.42s]
+exit=0
+
+$ colcon test --packages-select scene_adapter --event-handlers console_direct+
+Starting >>> scene_adapter
+============================= test session starts ==============================
+platform linux -- Python 3.14.4, pytest-9.0.2, pluggy-1.6.0
+cachedir: /home/ubuntu/ros2_local/build/scene_adapter/.pytest_cache
+rootdir: /home/ubuntu/ros2_local/src/scene_adapter
+plugins: ament_copyright-0.20.6, ament_pep257-0.20.6, ament_xmllint-0.20.6, ament_lint-0.20.6, ament_mypy-0.20.6, launch_testing-3.9.8, ament_flake8-0.20.6, launch_testing_ros-0.29.9, typeguard-4.4.4, colcon-core-0.21.3, cov-5.0.0
+collected 61 items
+
+test/test_convert.py ...................................                 [ 57%]
+test/test_copyright.py s                                                 [ 59%]
+test/test_core.py ......................                                 [ 95%]
+test/test_flake8.py .                                                    [ 96%]
+test/test_pep257.py .                                                    [ 98%]
+test/test_xmllint.py .                                                   [100%]
+
+-- generated xml file: /home/ubuntu/ros2_local/build/scene_adapter/pytest.xml --
+======================== 60 passed, 1 skipped in 1.20s =========================
+Finished <<< scene_adapter [1.84s]
+
+Summary: 1 package finished [2.00s]
+
+$ colcon test-result --test-result-base build/scene_adapter --verbose
+Summary: 61 tests, 0 errors, 0 failures, 1 skipped
+exit=0

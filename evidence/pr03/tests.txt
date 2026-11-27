@@ -1,0 +1,39 @@
+$ colcon build --symlink-install --packages-select turtle_bringup patrol
+Starting >>> patrol
+Starting >>> turtle_bringup
+Finished <<< patrol [1.58s]
+Finished <<< turtle_bringup [1.59s]
+
+Summary: 2 packages finished [1.72s]
+exit=0
+
+$ (cd src/patrol && python3 -m pytest test -v)
+============================= test session starts ==============================
+platform linux -- Python 3.14.4, pytest-9.0.2, pluggy-1.6.0 -- /usr/bin/python3
+rootdir: /home/ubuntu/ros2_local/src/patrol
+plugins: ament_copyright-0.20.6, ament_pep257-0.20.6, ament_xmllint-0.20.6, ament_lint-0.20.6, ament_mypy-0.20.6, launch_testing-3.9.8, ament_flake8-0.20.6, launch_testing_ros-0.29.9, typeguard-4.4.4, colcon-core-0.21.1, cov-5.0.0
+collecting ... collected 10 items
+
+test/test_command.py::test_no_pose_gives_zero_command PASSED             [ 10%]
+test/test_command.py::test_regular_pose_gives_patrol_command PASSED      [ 20%]
+test/test_command.py::test_command_does_not_depend_on_position PASSED    [ 30%]
+test/test_command.py::test_command_is_clamped PASSED                     [ 40%]
+test/test_command.py::test_clamp PASSED                                  [ 50%]
+test/test_copyright.py::test_copyright SKIPPED (No copyright header ...) [ 60%]
+test/test_flake8.py::test_flake8 PASSED                                  [ 70%]
+test/test_mypy.py::test_mypy PASSED                                      [ 80%]
+test/test_pep257.py::test_pep257 PASSED                                  [ 90%]
+test/test_xmllint.py::test_xmllint PASSED                                [100%]
+
+========================= 9 passed, 1 skipped in 5.69s =========================
+exit=0
+
+$ colcon test --packages-select patrol
+Starting >>> patrol
+Finished <<< patrol [11.1s]
+
+Summary: 1 package finished [11.3s]
+
+$ colcon test-result --verbose
+Summary: 10 tests, 0 errors, 0 failures, 1 skipped
+exit=0

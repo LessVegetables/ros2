@@ -258,3 +258,26 @@ timeout --preserve-status --signal=INT --kill-after=60s 40s ros2 bag record --st
 colcon test --packages-select course_simulation && colcon test-result --verbose
 python3 .course-kit/v1/tools/check_practice.py PR07 --submission .
 ```
+
+## ПР08. Локализация AMCL на записи ПР07
+
+Пакет `src/localization_case` (ament_cmake): `launch/localization.launch.py`
+(map_server + amcl + lifecycle_manager_localization), `config/amcl.yaml` (копия
+профиля kit), `measure_localization.py`, `make_localization_report.py`.
+Контейнеру нужны `ros-lyrical-nav2-amcl`, `-nav2-map-server`, `-nav2-lifecycle-manager`.
+
+```bash
+colcon build --symlink-install --packages-select localization_case && source install/setup.bash
+# A
+ros2 launch localization_case localization.launch.py \
+  params_file:=$PWD/src/localization_case/config/amcl.yaml map:=$PWD/.course-kit/v1/fixtures/pr08/map.yaml
+# B (до player)
+ros2 run localization_case measure_localization.py --ros-args -p use_sim_time:=true -p output:=/tmp/metrics.json
+# C
+ros2 bag play ~/bags/pr07-sensors --topics /vehicle/scan /vehicle/odom /tf /tf_static /clock
+ros2 run tf2_ros tf2_echo map odom --ros-args -p use_sim_time:=true
+python3 .course-kit/v1/tools/validate_localization.py evidence/pr08/localization.json \
+  --schema .course-kit/v1/fixtures/pr08/localization-result-v1.schema.json \
+  --map-yaml evidence/pr08/map.yaml --map-pgm evidence/pr08/map.pgm
+python3 .course-kit/v1/tools/check_practice.py PR08 --submission .
+```

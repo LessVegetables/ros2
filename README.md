@@ -211,3 +211,22 @@ ros2 bag info evidence/pr05/bag
 colcon test --packages-select patrol course_bringup && colcon test-result --verbose
 python3 .course-kit/v1/tools/check_practice.py PR05 --submission .
 ```
+
+## ПР06. Модель робота и дерево tf
+
+Пакет `src/course_description`: `urdf/vehicle.urdf.xacro` (размеры из
+course kit `models/course_ackermann/model.sdf`), `launch/display.launch.py`
+(robot_state_publisher + RViz), тесты структуры.
+
+```bash
+colcon build --symlink-install --packages-select course_description && source install/setup.bash
+xacro src/course_description/urdf/vehicle.urdf.xacro > /tmp/vehicle.urdf
+check_urdf /tmp/vehicle.urdf
+ros2 launch course_description display.launch.py            # rviz:=false — без окна; zero_joints:=true — колёса в /tf
+ros2 run tf2_ros tf2_echo base_link lidar_link               # (0.28, 0, 0.38)
+ros2 topic info /tf_static --verbose                         # RELIABLE, TRANSIENT_LOCAL
+timeout --signal=INT 4 ros2 topic echo /tf_static --once --qos-durability transient_local --qos-reliability reliable; echo "exit=$?"
+timeout --signal=INT 4 ros2 topic echo /tf_static --once --qos-durability volatile --qos-reliability reliable; echo "exit=$?"
+colcon test --packages-select course_description && colcon test-result --verbose
+python3 .course-kit/v1/tools/check_practice.py PR06 --submission .
+```

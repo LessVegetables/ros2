@@ -281,3 +281,17 @@ python3 .course-kit/v1/tools/validate_localization.py evidence/pr08/localization
   --map-yaml evidence/pr08/map.yaml --map-pgm evidence/pr08/map.pgm
 python3 .course-kit/v1/tools/check_practice.py PR08 --submission .
 ```
+
+## ПР09. Восприятие: от картинки к измерению
+
+`data/manifest.json` — исправленное разбиение (capture-a/b → calibration,
+capture-c/d → test). Пакет `src/perception_baseline` — ROS-обёртка baseline;
+команды запуска и показа — в `src/perception_baseline/README.md`.
+
+```bash
+python3 .course-kit/v1/tools/evaluate_perception.py --fixture .course-kit/v1/fixtures/pr09 \
+  --manifest data/manifest.json --output evidence/pr09/metrics.json
+colcon build --symlink-install --packages-select perception_baseline && source install/setup.bash
+colcon test --packages-select perception_baseline && colcon test-result --verbose
+python3 .course-kit/v1/tools/check_practice.py PR09 --submission .
+```

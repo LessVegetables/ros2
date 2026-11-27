@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "frame_id": "camera_optical_frame",
+  "width": 8,
+  "height": 6,
+  "fx": 8.0,
+  "fy": 8.0,
+  "cx": 3.5,
+  "cy": 2.5,
+  "depth_scale_m": 0.001
+}

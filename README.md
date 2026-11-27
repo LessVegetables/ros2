@@ -115,3 +115,44 @@ ros2 topic pub --once /turtle1/cmd_vel geometry_msgs/msg/Twist \
 python3 -m py_compile src/turtle_bringup/launch/sim.launch.py
 python3 .course-kit/v1/tools/check_practice.py PR02 --submission .
 ```
+
+## ПР03. Нода patrol
+
+Пакет `src/patrol`: подписка на `/turtle1/pose`, таймер 0,1 с и издатель
+`geometry_msgs/msg/Twist` в **относительный** `cmd_vel`. До первой позы команда
+нулевая, затем `linear.x=0.5`, `angular.z=0.3`. Выбор команды — чистая функция
+`patrol.command.choose_command`.
+
+Сборка и тесты (из корня репозитория):
+
+```bash
+source /opt/ros/lyrical/setup.bash
+colcon build --symlink-install --packages-select turtle_bringup patrol
+source install/setup.bash
+(cd src/patrol && python3 -m pytest test -v)
+colcon test --packages-select patrol && colcon test-result --verbose
+```
+
+Опыт (A — симулятор, B — patrol, C — наблюдение; везде `ROS_DOMAIN_ID=26`):
+
+```bash
+# A
+ros2 launch turtle_bringup sim.launch.py
+# B — сбой: команда уходит в /cmd_vel, черепаха стоит
+ros2 run patrol patrol
+# C
+ros2 node info /patrol
+ros2 topic info /cmd_vel --verbose
+ros2 topic info /turtle1/cmd_vel --verbose
+ros2 topic echo /turtle1/pose --once
+# B — исправление remap (Ctrl+C, затем)
+ros2 run patrol patrol --ros-args -r cmd_vel:=/turtle1/cmd_vel
+# C — частота команды
+timeout --signal=INT 10s ros2 topic hz /turtle1/cmd_vel --qos-reliability reliable
+```
+
+Проверка сдачи:
+
+```bash
+python3 .course-kit/v1/tools/check_practice.py PR03 --submission .
+```

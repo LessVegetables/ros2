@@ -8,3 +8,6 @@ log/
 __pycache__/
 *.pyc
 *.egg-info/
+
+# personal notes
+if_you_wipe_your_docker_images_again_daniel.md

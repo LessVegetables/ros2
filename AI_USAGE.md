@@ -96,3 +96,12 @@
 | Claude Opus 5.5 (`claude-opus-5-5`) | Claude Code (desktop app), `docker exec` в контейнер `ros2` | `evidence/pr08/*` | **запустил опыт сам**: установил Nav2 в контейнер, replay записи ПР07, дефект `chassis`, измерение и отчёт | метрики записаны измерителем из живого прогона; валидатор курса — корректно |
 
 Команды ROS 2 для evidence этой ПР запускал ИИ-агент в моём контейнере.
+
+## PR09
+
+- Использован ИИ: да (`ai_used: true` в отчёте этой ПР).
+
+| Модель | Инструмент / среда | Компонент | Характер помощи | Как проверено |
+|--------|--------------------|-----------|-----------------|---------------|
+| Claude Opus 5.5 (`claude-opus-5-5`) | Claude Code (desktop app) | `src/perception_baseline` (core, node, fixture_io, publish_pair, тесты, README), `data/manifest.json` | ROS-обёртка того же baseline, 2D/3D/диагностика, ROS-тесты по топикам; исправление списков разбиения | `colcon test`: 20 тестов (19 passed); evaluator курса — exit 0 |
+| Claude Opus 5.5 (`claude-opus-5-5`) | Claude Code (desktop app), `docker exec` в контейнер `ros2` | `evidence/pr09/*` | **запустил сам** evaluator до/после, ROS-демо пяти случаев; написал разбор ошибок по отчётам | числа в errors.md взяты из `metrics-before.json` / `metrics.json` |

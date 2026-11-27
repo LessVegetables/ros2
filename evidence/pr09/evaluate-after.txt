@@ -1,0 +1,2 @@
+$ python3 .course-kit/v1/tools/evaluate_perception.py --fixture .course-kit/v1/fixtures/pr09 --manifest data/manifest.json --output evidence/pr09/metrics.json
+exit=0

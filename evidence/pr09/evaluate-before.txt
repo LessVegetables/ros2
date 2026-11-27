@@ -1,0 +1,6 @@
+$ python3 .course-kit/v1/tools/evaluate_perception.py --fixture .course-kit/v1/fixtures/pr09 --manifest data/manifest.json --allow-leak --output evidence/pr09/metrics-before.json
+exit=0
+
+$ (без --allow-leak) python3 .course-kit/v1/tools/evaluate_perception.py --fixture .course-kit/v1/fixtures/pr09 --manifest data/manifest.json --output /tmp/leaky.json
+Разбиение содержит утечку или нарушает неизменяемый контракт; подробности сохранены в отчёте
+exit=1

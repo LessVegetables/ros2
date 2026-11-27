@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "practice_id": "PR09",
+  "commit": "abb488ccb49c3418ccd4dcf2c579c2e42de859d5",
+  "course_kit": {
+    "version": "v1-w12",
+    "archive_sha256": "525e86f818ffed166e7f7b67cc87fdd3f3ea840d13aa90e76bde9fda0f3c9c5a"
+  },
+  "commands": [
+    "cp .course-kit/v1/fixtures/pr09/manifest-leaky.json data/manifest.json",
+    "python3 .course-kit/v1/tools/evaluate_perception.py --fixture .course-kit/v1/fixtures/pr09 --manifest data/manifest.json --allow-leak --output evidence/pr09/metrics-before.json",
+    "python3 .course-kit/v1/tools/evaluate_perception.py --fixture .course-kit/v1/fixtures/pr09 --manifest data/manifest.json --output evidence/pr09/metrics.json",
+    "colcon build --symlink-install --packages-select perception_baseline",
+    "colcon test --packages-select perception_baseline",
+    "colcon test-result --verbose",
+    "ros2 run perception_baseline perception_baseline",
+    "ros2 run perception_baseline publish_pair --ros-args -p fixture:=$PWD/.course-kit/v1/fixtures/pr09 -p sample:=sample-01 -p mode:=ok",
+    "ros2 topic echo /perception/status",
+    "python3 .course-kit/v1/tools/check_practice.py PR09 --submission ."
+  ],
+  "tests": [
+    {
+      "name": "evaluate_perception: исправленное разбиение валидно (split_issues=[]), exit=0",
+      "status": "passed"
+    },
+    {
+      "name": "test_core: step/endianness Image, детектор, формула проекции, проверки пары",
+      "status": "passed"
+    },
+    {
+      "name": "test_node: корректная пара -> точка (-0.0625, 0.0625, 1.0) в camera_optical_frame, stamp RGB",
+      "status": "passed"
+    },
+    {
+      "name": "test_node: zero_depth / no_depth / stamp_mismatch / frame_mismatch -> 2D есть, 3D пусто, WARN с reason",
+      "status": "passed"
+    },
+    {
+      "name": "lint: flake8, pep257, xmllint",
+      "status": "passed"
+    },
+    {
+      "name": "lint: copyright (сгенерированный пропуск)",
+      "status": "skipped"
+    }
+  ],
+  "defect": {
+    "reproducer": "data/manifest.json = manifest-leaky.json: evaluate_perception.py --allow-leak -> split_valid=false, split_issues: 'capture_id пересекаются между calibration и test' + 2 нарушения контракта групп; test = sample-03, sample-04 (capture-a, capture-b); TP 2, FP 0, FN 0, F1 1.0. Без --allow-leak тот же evaluator завершается с кодом 1.",
+    "root_cause": "Разбиение нарушало правило capture_id: в test попали кадры захватов, которые по неизменяемому split-contract.json относятся к calibration, а трудные кадры capture-c/d ушли в calibration. Детектор не обучается — завышенный F1 дал лёгкий состав test, а пересечение захватов нарушало независимость выборок.",
+    "proof_after": "В data/manifest.json исправлены только списки: calibration = sample-01..04 (capture-a/b), test = sample-05, sample-06 (capture-c/d). evaluate_perception.py без --allow-leak -> exit 0, split_valid=true, split_issues=[]; TP 1, FP 1, FN 1, F1 0.5; fixture_sha256 тот же (7fe4b0e5...), manifest_sha256 3a219eb2...; причины ошибок разобраны в errors.md."
+  },
+  "claims": {
+    "public_tests_passed": true,
+    "defect_reproduced": true,
+    "defect_fixed": true,
+    "dataset_versioned": true
+  },
+  "time": {
+    "contact_academic_hours": 2,
+    "self_study_hours": 2.5
+  },
+  "ai_used": true
+}

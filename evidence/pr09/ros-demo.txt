@@ -1,0 +1,71 @@
+
+## mode=ok
+$ ros2 run perception_baseline publish_pair --ros-args -p fixture:=$PWD/.course-kit/v1/fixtures/pr09 -p sample:=sample-01 -p mode:=ok
+отправлено: sample-01, mode=ok, stamp=1795733800.260997508
+--- /perception/detections_2d
+[vision_msgs.msg.Detection2D(header=std_msgs.msg.Header(stamp=builtin_interfaces.msg.Time(sec=1795733800, nanosec=260997508), frame_id='camera_optical_frame'), results=[vision_msgs.msg.ObjectHypothesisWithPose(hypothesis=vision_msgs.msg.ObjectHypothesis(class_id='cone', score=1.0), pose=geometry_msgs.msg.PoseWithCovariance(pose=geometry_msgs.msg.Pose(position=geometry_msgs.msg.Point(x=0.0, y=0.0, z=0.0), orientation=geometry_msgs.msg.Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)), covariance=array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+       0., 0.])))], bbox=vision_msgs.msg.BoundingBox2D(center=vision_msgs.msg.Pose2D(position=vision_msgs.msg.Point2D(x=3.0, y=3.0), theta=0.0), size_x=2.0, size_y=2.0), id='')]
+--- /perception/objects_3d (detections)
+--- /perception/status
+[diagnostic_msgs.msg.DiagnosticStatus(level=b'\x00', name='perception_baseline', message='spatial_ok', hardware_id='camera_optical_frame', values=[diagnostic_msgs.msg.KeyValue(key='reason', value=''), diagnostic_msgs.msg.KeyValue(key='stamp', value='1795733800.260997508'), diagnostic_msgs.msg.KeyValue(key='frame_id', value='camera_optical_frame'), diagnostic_msgs.msg.KeyValue(key='detections_2d', value='1'), diagnostic_msgs.msg.KeyValue(key='objects_3d', value='1'), diagnostic_msgs.msg.KeyValue(key='geometry', value='точка поверхности на луче центра bbox; bbox.size=0: размер и ориентация не оцениваются')])]
+
+## mode=zero_depth
+$ ros2 run perception_baseline publish_pair --ros-args -p fixture:=$PWD/.course-kit/v1/fixtures/pr09 -p sample:=sample-01 -p mode:=zero_depth
+отправлено: sample-01, mode=zero_depth, stamp=1795733805.290714552
+--- /perception/detections_2d
+[vision_msgs.msg.Detection2D(header=std_msgs.msg.Header(stamp=builtin_interfaces.msg.Time(sec=1795733805, nanosec=290714552), frame_id='camera_optical_frame'), results=[vision_msgs.msg.ObjectHypothesisWithPose(hypothesis=vision_msgs.msg.ObjectHypothesis(class_id='cone', score=1.0), pose=geometry_msgs.msg.PoseWithCovariance(pose=geometry_msgs.msg.Pose(position=geometry_msgs.msg.Point(x=0.0, y=0.0, z=0.0), orientation=geometry_msgs.msg.Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)), covariance=array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+       0., 0.])))], bbox=vision_msgs.msg.BoundingBox2D(center=vision_msgs.msg.Pose2D(position=vision_msgs.msg.Point2D(x=3.0, y=3.0), theta=0.0), size_x=2.0, size_y=2.0), id='')]
+--- /perception/objects_3d (detections)
+[]
+--- /perception/status
+[diagnostic_msgs.msg.DiagnosticStatus(level=b'\x01', name='perception_baseline', message='zero_depth', hardware_id='camera_optical_frame', values=[diagnostic_msgs.msg.KeyValue(key='reason', value='zero_depth'), diagnostic_msgs.msg.KeyValue(key='stamp', value='1795733805.290714552'), diagnostic_msgs.msg.KeyValue(key='frame_id', value='camera_optical_frame'), diagnostic_msgs.msg.KeyValue(key='detections_2d', value='1'), diagnostic_msgs.msg.KeyValue(key='objects_3d', value='0'), diagnostic_msgs.msg.KeyValue(key='geometry', value='точка поверхности на луче центра bbox; bbox.size=0: размер и ориентация не оцениваются')])]
+
+## mode=no_depth
+$ ros2 run perception_baseline publish_pair --ros-args -p fixture:=$PWD/.course-kit/v1/fixtures/pr09 -p sample:=sample-01 -p mode:=no_depth
+отправлено: sample-01, mode=no_depth, stamp=1795733810.313997429
+--- /perception/detections_2d
+[vision_msgs.msg.Detection2D(header=std_msgs.msg.Header(stamp=builtin_interfaces.msg.Time(sec=1795733810, nanosec=313997429), frame_id='camera_optical_frame'), results=[vision_msgs.msg.ObjectHypothesisWithPose(hypothesis=vision_msgs.msg.ObjectHypothesis(class_id='cone', score=1.0), pose=geometry_msgs.msg.PoseWithCovariance(pose=geometry_msgs.msg.Pose(position=geometry_msgs.msg.Point(x=0.0, y=0.0, z=0.0), orientation=geometry_msgs.msg.Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)), covariance=array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+       0., 0.])))], bbox=vision_msgs.msg.BoundingBox2D(center=vision_msgs.msg.Pose2D(position=vision_msgs.msg.Point2D(x=3.0, y=3.0), theta=0.0), size_x=2.0, size_y=2.0), id='')]
+--- /perception/objects_3d (detections)
+[]
+--- /perception/status
+[diagnostic_msgs.msg.DiagnosticStatus(level=b'\x01', name='perception_baseline', message='missing_depth', hardware_id='camera_optical_frame', values=[diagnostic_msgs.msg.KeyValue(key='reason', value='missing_depth'), diagnostic_msgs.msg.KeyValue(key='stamp', value='1795733810.313997429'), diagnostic_msgs.msg.KeyValue(key='frame_id', value='camera_optical_frame'), diagnostic_msgs.msg.KeyValue(key='detections_2d', value='1'), diagnostic_msgs.msg.KeyValue(key='objects_3d', value='0'), diagnostic_msgs.msg.KeyValue(key='geometry', value='точка поверхности на луче центра bbox; bbox.size=0: размер и ориентация не оцениваются')])]
+
+## mode=stamp_mismatch
+$ ros2 run perception_baseline publish_pair --ros-args -p fixture:=$PWD/.course-kit/v1/fixtures/pr09 -p sample:=sample-01 -p mode:=stamp_mismatch
+отправлено: sample-01, mode=stamp_mismatch, stamp=1795733815.225924292
+--- /perception/detections_2d
+[vision_msgs.msg.Detection2D(header=std_msgs.msg.Header(stamp=builtin_interfaces.msg.Time(sec=1795733815, nanosec=225924292), frame_id='camera_optical_frame'), results=[vision_msgs.msg.ObjectHypothesisWithPose(hypothesis=vision_msgs.msg.ObjectHypothesis(class_id='cone', score=1.0), pose=geometry_msgs.msg.PoseWithCovariance(pose=geometry_msgs.msg.Pose(position=geometry_msgs.msg.Point(x=0.0, y=0.0, z=0.0), orientation=geometry_msgs.msg.Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)), covariance=array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+       0., 0.])))], bbox=vision_msgs.msg.BoundingBox2D(center=vision_msgs.msg.Pose2D(position=vision_msgs.msg.Point2D(x=3.0, y=3.0), theta=0.0), size_x=2.0, size_y=2.0), id='')]
+--- /perception/objects_3d (detections)
+[]
+--- /perception/status
+[diagnostic_msgs.msg.DiagnosticStatus(level=b'\x01', name='perception_baseline', message='stamp_mismatch', hardware_id='camera_optical_frame', values=[diagnostic_msgs.msg.KeyValue(key='reason', value='stamp_mismatch'), diagnostic_msgs.msg.KeyValue(key='stamp', value='1795733815.225924292'), diagnostic_msgs.msg.KeyValue(key='frame_id', value='camera_optical_frame'), diagnostic_msgs.msg.KeyValue(key='detections_2d', value='1'), diagnostic_msgs.msg.KeyValue(key='objects_3d', value='0'), diagnostic_msgs.msg.KeyValue(key='geometry', value='точка поверхности на луче центра bbox; bbox.size=0: размер и ориентация не оцениваются')])]
+
+## mode=frame_mismatch
+$ ros2 run perception_baseline publish_pair --ros-args -p fixture:=$PWD/.course-kit/v1/fixtures/pr09 -p sample:=sample-01 -p mode:=frame_mismatch
+отправлено: sample-01, mode=frame_mismatch, stamp=1795733820.191253170
+--- /perception/detections_2d
+[vision_msgs.msg.Detection2D(header=std_msgs.msg.Header(stamp=builtin_interfaces.msg.Time(sec=1795733820, nanosec=191253170), frame_id='camera_optical_frame'), results=[vision_msgs.msg.ObjectHypothesisWithPose(hypothesis=vision_msgs.msg.ObjectHypothesis(class_id='cone', score=1.0), pose=geometry_msgs.msg.PoseWithCovariance(pose=geometry_msgs.msg.Pose(position=geometry_msgs.msg.Point(x=0.0, y=0.0, z=0.0), orientation=geometry_msgs.msg.Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)), covariance=array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+       0., 0.])))], bbox=vision_msgs.msg.BoundingBox2D(center=vision_msgs.msg.Pose2D(position=vision_msgs.msg.Point2D(x=3.0, y=3.0), theta=0.0), size_x=2.0, size_y=2.0), id='')]
+--- /perception/objects_3d (detections)
+[]
+--- /perception/status
+[diagnostic_msgs.msg.DiagnosticStatus(level=b'\x01', name='perception_baseline', message='frame_mismatch', hardware_id='camera_optical_frame', values=[diagnostic_msgs.msg.KeyValue(key='reason', value='frame_mismatch'), diagnostic_msgs.msg.KeyValue(key='stamp', value='1795733820.191253170'), diagnostic_msgs.msg.KeyValue(key='frame_id', value='camera_optical_frame'), diagnostic_msgs.msg.KeyValue(key='detections_2d', value='1'), diagnostic_msgs.msg.KeyValue(key='objects_3d', value='0'), diagnostic_msgs.msg.KeyValue(key='geometry', value='точка поверхности на луче центра bbox; bbox.size=0: размер и ориентация не оцениваются')])]
+
+## mode=ok — полный /perception/objects_3d
+$ ros2 topic echo /perception/objects_3d --once
+  frame_id: camera_optical_frame
+    frame_id: camera_optical_frame
+      class_id: cone
+        position:
+          x: -0.0625
+          y: 0.0625
+          z: 1.0
+          x: 0.0
+          y: 0.0
+          z: 0.0
+    center:
+      position:
+        x: -0.0625
+        y: 0.0625
